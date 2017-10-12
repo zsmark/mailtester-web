@@ -1,18 +1,27 @@
 package hu.giro.smtpserver.server;
 
 
+import hu.giro.smtpserver.model.entity.EmailObject;
+import hu.giro.smtpserver.model.repository.EmailObjectRepository;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Observable;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 /**
@@ -21,6 +30,7 @@ import java.util.regex.Pattern;
  * @author Nilhcem
  * @since 1.0
  */
+@Service
 public final class MailSaver extends Observable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailSaver.class);
@@ -29,6 +39,13 @@ public final class MailSaver extends Observable {
     private static final Pattern SUBJECT_PATTERN = Pattern.compile("^Subject: (.*)$");
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyhhmmssSSS");
+
+    private final EmailObjectRepository repository;
+
+    @Autowired
+    public MailSaver(EmailObjectRepository repository) {
+        this.repository = repository;
+    }
 
     /**
      * Saves incoming email in file system and notifies observers.
@@ -57,6 +74,7 @@ public final class MailSaver extends Observable {
             setChanged();
             notifyObservers(model);
         }
+        repository.save(model);
     }
 
     /**

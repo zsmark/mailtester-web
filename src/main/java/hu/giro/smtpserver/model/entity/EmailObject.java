@@ -3,6 +3,7 @@ package hu.giro.smtpserver.model.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "SENDED_MAIL")
-public class EmailObject {
+public class EmailObject implements Serializable{
 
     @Id
     @GenericGenerator(name = "SEQ_MAIL", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
@@ -19,10 +20,10 @@ public class EmailObject {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_MAIL")
     private Integer id;
 
-    @Column(name = "FROM")
+    @Column(name = "FROM_USER")
     private String from;
 
-    @Column(name = "TO")
+    @Column(name = "TO_USER")
     private String to;
 
     @Column(name = "CARBON_COPY")
@@ -31,7 +32,7 @@ public class EmailObject {
     @Column(name = "BLIND_CARBON_COPY")
     private String bcc;
 
-    @Column(name = "SUBJECT")
+    @Column(name = "EMAIL_SUBJECT")
     private String subject;
 
     @Column(name = "EMAIL_STRING")
