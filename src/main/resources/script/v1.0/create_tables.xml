@@ -10,16 +10,16 @@
     <changeSet author="zsidom" id="4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="SENDED_MAIL">
             <column defaultValueSequenceNext="SEQ_MAIL" name="ID" type="INTEGER">
-                <constraints primaryKey="true" primaryKeyName="sended_mail_pk"/>
+                <constraints primaryKey="true" primaryKeyName="SENDED_MAIL_PK"/>
             </column>
             <column defaultValueNumeric="0" name="VERSION" type="INTEGER"/>
-            <column name="FROM" type="varchar(255)"/>
-            <column name="TO" type="varchar(500)"/>
-            <column name="CARBON_COPY" type="varchar(500)"/>
-            <column name="BLIND_CARBON_COPY" type="varchar(500)"/>
-            <column name="SUBJECT" type="varchar(400)"/>
-            <column name="EMAIL_STRING" type="varchar(2000)"/>
-            <column name="FILE_PATH" type="varchar(2000)"/>
+            <column name="FROM_USER" type="VARCHAR(255)"/>
+            <column name="TO_USER" type="VARCHAR(500)"/>
+            <column name="CARBON_COPY" type="VARCHAR(500)"/>
+            <column name="BLIND_CARBON_COPY" type="VARCHAR(500)"/>
+            <column name="EMAIL_SUBJECT" type="VARCHAR(400)"/>
+            <column name="EMAIL_STRING" type="VARCHAR(2000)"/>
+            <column name="FILE_PATH" type="VARCHAR(2000)"/>
             <column name="RECEIVED_DATE" type="DATE"/>
             <column name="CONTENT" type="BLOB"/>
         </createTable>

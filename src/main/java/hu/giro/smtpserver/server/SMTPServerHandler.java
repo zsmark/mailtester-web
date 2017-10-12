@@ -2,6 +2,7 @@ package hu.giro.smtpserver.server;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.subethamail.smtp.helper.SimpleMessageListenerAdapter;
 import org.subethamail.smtp.server.SMTPServer;
 
+import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 
 /**
@@ -21,9 +23,17 @@ import java.net.InetAddress;
 public class SMTPServerHandler {
 
     private static final Log LOGGER = LogFactory.getLog(SMTPServerHandler.class);
-    private final MailSaver mailSaver = new MailSaver();
-    private final MailListener myListener = new MailListener(mailSaver);
-    private final SMTPServer smtpServer = new SMTPServer(new SimpleMessageListenerAdapter(myListener), new SMTPAuthHandlerFactory());
+
+    @Autowired
+    private MailListenerFactory myListenerFactory;
+
+    private SMTPServer smtpServer;
+
+    @PostConstruct
+    public void init(){
+        smtpServer  = new SMTPServer(new SimpleMessageListenerAdapter(myListenerFactory.createMailListener()), new SMTPAuthHandlerFactory());
+    }
+
 
     public SMTPServerHandler() {
     }
@@ -51,15 +61,6 @@ public class SMTPServerHandler {
             LOGGER.debug("Stopping SMTP server");
             smtpServer.stop();
         }
-    }
-
-    /**
-     * Returns the {@code MailSaver} object.
-     *
-     * @return the {@code MailSaver} object.
-     */
-    public MailSaver getMailSaver() {
-        return mailSaver;
     }
 
     /**
