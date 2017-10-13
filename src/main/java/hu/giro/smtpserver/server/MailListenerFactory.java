@@ -43,6 +43,7 @@ public class MailListenerFactory {
         /**
          * Receives emails and forwards them to the {@link MailSaver} object.
          */
+        // TODO recipient domain részét egy @Component Set be berakni hogy a szűrőmezőben lehessen használni
         @Override
         public void deliver(String from, String recipient, InputStream data) throws IOException {
             log.info(String.format("Deliver from %s to %s", from, recipient));
