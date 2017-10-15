@@ -6,7 +6,9 @@ import com.vaadin.data.ValidationException;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.*;
+import com.vaadin.ui.components.grid.GridSelectionModel;
 import com.vaadin.ui.renderers.DateRenderer;
 import hu.giro.smtpserver.model.EmailSearchDTO;
 import hu.giro.smtpserver.model.EmailService;
@@ -16,7 +18,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.vaadin.teemusa.gridextensions.SelectGrid;
+import org.vaadin.teemusa.gridextensions.client.tableselection.TableSelectionState;
+import org.vaadin.teemusa.gridextensions.tableselection.TableSelectionModel;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
@@ -69,17 +76,11 @@ public class EmailsViewFactory {
         }
 
         private void init() {
-            //emailGrid.setItems(emailService.findAll());
-            emailGrid.setColumns("id", "from", "to", "subject", "receivedDate");
-            emailGrid.getColumn("id").setCaption("Nr");
-            emailGrid.getColumn("from").setCaption("Feladó");
-            emailGrid.getColumn("to").setCaption("Címzett");
 
             Column<EmailObject, Date> dateColumn = (Column<EmailObject, Date>) emailGrid.getColumn("receivedDate");
-            dateColumn.setCaption("Érkezett");
             dateColumn.setRenderer(new DateRenderer(timeFormat));
             dateColumn.setExpandRatio(1);
-            emailGrid.getColumn("subject").setCaption("Tárgy");
+
             emailGrid.getColumn("subject").setExpandRatio(10);
 
             readFilter.withCaptions("Olvasott", "Olvasatlan", "Mind");
@@ -88,20 +89,30 @@ public class EmailsViewFactory {
             binder.bind(textFilter, "textFilter");
 
 
-
             markRead.addClickListener(this::markRead);
 
-            emailGrid.setStyleGenerator(item -> item.isRead()?"":"bold");
+            emailGrid.setStyleGenerator(item -> item.isRead() ? "" : "bold");
 
             domainFilter.setEmptySelectionAllowed(true);
             domainFilter.setEmptySelectionCaption("Minden");
-            binder.bind(domainFilter,EmailSearchDTO::getDomainFilter, EmailSearchDTO::setDomainFilter);
+            binder.bind(domainFilter, EmailSearchDTO::getDomainFilter, EmailSearchDTO::setDomainFilter);
 
             readFilter.addValueChangeListener(this::doSearch);
             textFilter.addValueChangeListener(this::doSearch);
             domainFilter.addValueChangeListener(this::doSearch);
 
             trashButton.addClickListener(this::deleteAll);
+
+           /*int index = getComponentIndex(emailGrid);
+            TableSelectionModel<EmailObject> selectionModel = new TableSelectionModel<>();
+            selectionModel.setMode(TableSelectionState.TableSelectionMode.SHIFT);
+            try {
+                Method setter = Grid.class.getDeclaredMethod("setSelectionModel", GridSelectionModel.class);
+                setter.setAccessible(true);
+                setter.invoke(emailGrid,selectionModel);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }*/
         }
 
         private void deleteAll(Button.ClickEvent clickEvent) {
@@ -115,8 +126,7 @@ public class EmailsViewFactory {
         }
 
         private void markRead(Button.ClickEvent clickEvent) {
-            if (!emailGrid.getSelectedItems().isEmpty())
-            {
+            if (!emailGrid.getSelectedItems().isEmpty()) {
                 emailGrid.getSelectedItems().forEach(emailObject -> {
                     emailObject.setRead(true);
                     emailService.save(emailObject);

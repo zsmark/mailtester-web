@@ -83,7 +83,13 @@
             <artifactId>vaadin-icons</artifactId>
             <version>3.0.1</version>
         </dependency>
-<!--VAADIN START-->
+        <dependency>
+            <groupId>org.vaadin.teemusa</groupId>
+            <artifactId>gridextensionpack</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+        <!--VAADIN START-->
         <!--<dependency>-->
             <!--<groupId>com.vaadin</groupId>-->
             <!--<artifactId>vaadin-server</artifactId>-->
