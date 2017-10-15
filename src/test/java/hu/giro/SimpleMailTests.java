@@ -28,8 +28,8 @@ public class SimpleMailTests {
         List<InternetAddress> toList = new ArrayList<InternetAddress>();
 
         sendMail("sender@test.hu",
-                getAddressList("to1@mail.giro.hu", "to2@mail.giro.hu"),
-                getAddressList("cc1@mail.giro.hu", "cc2@mail.giro.hu"),
+                getAddressList("to1@mail.giro.hu", "to2@gmail.com"),
+                getAddressList("cc1@mail.giro.hu", "cc2@otp.hu"),
                 getAddressList("bcc1@mail.giro.hu", "bcc2@mail.giro.hu"),
                 "Subject", "Levél");
     }

@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="vaadin-version" content="8.0.5">
+  <meta name="package-mapping" content="hu_giro_smtpserver_ui:hu.giro.smtpserver.ui">
+ </head>
+ <body>
+  <vaadin-vertical-layout size-full>
+   <vaadin-horizontal-layout width-full>
+    <vaadin-combo-box caption="Domain" data-item-type="java.lang.String" _id="domainFilter" :bottom>
+     <option item="Option1">Option 1</option>
+     <option item="Option2">Option 2</option>
+     <option item="Option3">Option 3</option>
+    </vaadin-combo-box>
+    <vaadin-text-field caption="Szöveg" _id="textFilter"></vaadin-text-field>
+    <hu_giro_smtpserver_ui-true-false-all-group _id="readFilter" :bottom :expand></hu_giro_smtpserver_ui-true-false-all-group>
+    <vaadin-horizontal-layout width-full :bottom :expand>
+     <vaadin-button plain-text _id="markRead" :bottom :right>
+       Kijelöltek olvasottra 
+     </vaadin-button>
+    </vaadin-horizontal-layout>
+    <vaadin-button icon="fonticon://Vaadin-Icons/e80b" plain-text _id="trashButton" :bottom :right></vaadin-button>
+   </vaadin-horizontal-layout>
+   <vaadin-grid width-full height="20em" data-item-type="hu.giro.smtpserver.model.entity.EmailObject" selection-mode="multi" _id="emailGrid">
+    <table>
+     <colgroup>
+      <col column-id="id" sortable>
+      <col column-id="from" sortable>
+      <col column-id="to" sortable>
+      <col column-id="cc" sortable>
+      <col column-id="bcc" sortable>
+      <col column-id="subject" sortable>
+      <col column-id="emailStr" sortable>
+      <col column-id="receivedDate" sortable>
+      <col column-id="content" sortable>
+      <col column-id="filePath" sortable>
+      <col column-id="version" sortable>
+     </colgroup>
+     <thead>
+      <tr default>
+       <th plain-text column-ids="id">Id</th>
+       <th plain-text column-ids="from">From</th>
+       <th plain-text column-ids="to">To</th>
+       <th plain-text column-ids="cc">Cc</th>
+       <th plain-text column-ids="bcc">Bcc</th>
+       <th plain-text column-ids="subject">Subject</th>
+       <th plain-text column-ids="emailStr">EmailStr</th>
+       <th plain-text column-ids="receivedDate">ReceivedDate</th>
+       <th plain-text column-ids="content">Content</th>
+       <th plain-text column-ids="filePath">FilePath</th>
+       <th plain-text column-ids="version">Version</th>
+      </tr>
+     </thead>
+     <tbody></tbody>
+    </table>
+   </vaadin-grid>
+   <vaadin-horizontal-layout _id="emailLayout" :expand="10"></vaadin-horizontal-layout>
+  </vaadin-vertical-layout>
+ </body>
+</html>

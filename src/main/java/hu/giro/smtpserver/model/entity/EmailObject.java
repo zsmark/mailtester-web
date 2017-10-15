@@ -1,6 +1,7 @@
 package hu.giro.smtpserver.model.entity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -38,11 +39,12 @@ public class EmailObject implements Serializable{
     @Column(name = "EMAIL_STRING")
     private String emailStr;
 
-    @Column(name = "FILE_PATH")
-    private String filePath;
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Column(name = "READ")
+    private boolean read=false;
 
     @Column(name = "RECEIVED_DATE")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date receivedDate;
 
     @Lob
@@ -51,6 +53,7 @@ public class EmailObject implements Serializable{
 
     @Version
     private Integer version;
+
 
     public Integer getId() {
         return id;
@@ -124,12 +127,12 @@ public class EmailObject implements Serializable{
         this.content = content;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public boolean isRead() {
+        return read;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setRead(boolean read) {
+        this.read = read;
     }
 
     public Integer getVersion() {
@@ -138,5 +141,11 @@ public class EmailObject implements Serializable{
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public String getDomain()
+    {  String []parts = to.split("@");
+       if (parts.length<2) return "Ismeretlen";
+       return parts[1];
     }
 }

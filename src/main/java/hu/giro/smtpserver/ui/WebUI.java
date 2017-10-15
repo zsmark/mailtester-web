@@ -5,9 +5,8 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Theme("valo")
 @SpringUI
@@ -15,9 +14,13 @@ import com.vaadin.ui.UI;
 @Title("Mailtester web")
 public class WebUI extends UI {
 
+    @Autowired
+    private EmailsViewFactory viewFactory;
+
     @Override
     protected void init(VaadinRequest request) {
-        setContent(new Button("Click me", e -> Notification.show("Hello Spring+Vaadin user!")));
+        setContent(viewFactory.create());
+       // setContent(new ProbaViewC());
     }
 }
 
