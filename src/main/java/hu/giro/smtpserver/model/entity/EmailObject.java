@@ -21,10 +21,13 @@ public class EmailObject implements Serializable{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_MAIL")
     private Integer id;
 
+    @Column(name = "SOURCE")
+    private String source;
+
     @Column(name = "FROM_USER")
     private String from;
 
-    @Column(name = "TO_USER")
+    @Column(name = "TO_USERS")
     private String to;
 
     @Column(name = "CARBON_COPY")
@@ -54,6 +57,16 @@ public class EmailObject implements Serializable{
     @Version
     private Integer version;
 
+    @Column
+    private String recipient;
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
 
     public Integer getId() {
         return id;
@@ -144,8 +157,16 @@ public class EmailObject implements Serializable{
     }
 
     public String getDomain()
-    {  String []parts = to.split("@");
+    {  String []parts = recipient.split("@");
        if (parts.length<2) return "Ismeretlen";
        return parts[1];
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
+
+    public String getRecipient() {
+        return recipient;
     }
 }

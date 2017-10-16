@@ -21,14 +21,13 @@
        Kijelöltek olvasottra 
      </vaadin-button>
     </vaadin-horizontal-layout>
-    <vaadin-button icon="fonticon://Vaadin-Icons/e80b" plain-text _id="trashButton" :bottom :right></vaadin-button>
    </vaadin-horizontal-layout>
    <vaadin-grid width-full height="20em" data-item-type="hu.giro.smtpserver.model.entity.EmailObject" selection-mode="multi" _id="emailGrid">
     <table>
      <colgroup>
       <col column-id="id" sortable>
       <col column-id="from" sortable>
-      <col column-id="to" sortable>
+      <col column-id="recipient" sortable>
       <col column-id="subject" sortable>
       <col column-id="receivedDate" sortable>
      </colgroup>
@@ -36,7 +35,7 @@
       <tr default>
        <th plain-text column-ids="id">Nr</th>
        <th plain-text column-ids="from">Feladó</th>
-       <th plain-text column-ids="to">Címzett</th>
+       <th plain-text column-ids="recipient">Címzett</th>
        <th plain-text column-ids="subject">Tárgy</th>
        <th plain-text column-ids="receivedDate">Érkezett</th>
       </tr>

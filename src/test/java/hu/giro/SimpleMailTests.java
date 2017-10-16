@@ -35,7 +35,7 @@ public class SimpleMailTests {
     }
 
     private void initMail() {
-        final String username = "username@gmail.com";
+        final String username = "Bankvaltas";
         final String password = "password";
 
         Properties props = new Properties();
@@ -79,7 +79,7 @@ public class SimpleMailTests {
             //email.setDebug(true);
             email.setHostName("localhost");
             email.setSmtpPort(2525);
-            email.setAuthentication("akarki", "pass");
+            email.setAuthentication("change", "pass");
             email.setFrom("sender@test.hu");
             email.setSubject("Test email");
             email.setCharset("UTF8");

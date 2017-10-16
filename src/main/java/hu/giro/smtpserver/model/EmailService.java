@@ -3,6 +3,7 @@ package hu.giro.smtpserver.model;
 import hu.giro.smtpserver.model.entity.EmailObject;
 
 import java.util.List;
+import java.util.Set;
 
 public interface EmailService {
     List<EmailObject> findAll();
@@ -13,4 +14,6 @@ public interface EmailService {
 
 
     void truncate();
+
+    Set<String> getDomains();
 }

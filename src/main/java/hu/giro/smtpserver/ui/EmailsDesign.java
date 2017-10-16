@@ -26,7 +26,6 @@ public class EmailsDesign extends VerticalLayout {
     protected TextField textFilter;
     protected TrueFalseAllGroup readFilter;
     protected Button markRead;
-    protected Button trashButton;
     protected Grid<hu.giro.smtpserver.model.entity.EmailObject> emailGrid;
     protected HorizontalLayout emailLayout;
 

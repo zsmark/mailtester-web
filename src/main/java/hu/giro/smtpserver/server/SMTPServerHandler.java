@@ -7,6 +7,9 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.subethamail.smtp.auth.LoginAuthenticationHandlerFactory;
+import org.subethamail.smtp.auth.LoginFailedException;
+import org.subethamail.smtp.auth.UsernamePasswordValidator;
 import org.subethamail.smtp.helper.SimpleMessageListenerAdapter;
 import org.subethamail.smtp.server.SMTPServer;
 
@@ -25,13 +28,19 @@ public class SMTPServerHandler {
     private static final Log LOGGER = LogFactory.getLog(SMTPServerHandler.class);
 
     @Autowired
-    private MailListenerFactory myListenerFactory;
+    private MailHandlerFactory handlerFactory;
 
     private SMTPServer smtpServer;
 
     @PostConstruct
     public void init(){
-        smtpServer  = new SMTPServer(new SimpleMessageListenerAdapter(myListenerFactory.createMailListener()), new SMTPAuthHandlerFactory());
+//        smtpServer  = new SMTPServer(new SimpleMessageListenerAdapter(myListenerFactory.createMailListener()), new SMTPAuthHandlerFactory());
+        smtpServer  = new SMTPServer(handlerFactory,new LoginAuthenticationHandlerFactory(new UsernamePasswordValidator() {
+            @Override
+            public void login(String username, String password) throws LoginFailedException {
+            //Mindent elfogadó authenticator
+            }
+        }));
     }
 
 

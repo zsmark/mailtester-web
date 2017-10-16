@@ -13,7 +13,6 @@ import com.vaadin.ui.renderers.DateRenderer;
 import hu.giro.smtpserver.model.EmailSearchDTO;
 import hu.giro.smtpserver.model.EmailService;
 import hu.giro.smtpserver.model.entity.EmailObject;
-import hu.giro.smtpserver.server.MailListenerFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +31,6 @@ import java.util.Optional;
 public class EmailsViewFactory {
     @Autowired
     private EmailService emailService;
-
-    @Autowired
-    private MailListenerFactory mailListener;
 
     static private Log log = LogFactory.getLog(EmailsViewFactory.class);
     static private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
@@ -68,7 +64,7 @@ public class EmailsViewFactory {
         private void updateDomains() {
 
 //            Optional<String> selected = domainFilter.getSelectedItem();
-            domainFilter.setItems(mailListener.getDomains());
+            domainFilter.setItems(emailService.getDomains());
 //            if (selected.isPresent() && mailListener.getDomains().contains(selected.get()))
 //            {
 //                domainFilter.setSelectedItem(selected.get());
@@ -82,6 +78,7 @@ public class EmailsViewFactory {
             dateColumn.setExpandRatio(1);
 
             emailGrid.getColumn("subject").setExpandRatio(10);
+            //emailGrid.addColumn(EmailObject::toString).setCaption("Plusszadat");
 
             readFilter.withCaptions("Olvasott", "Olvasatlan", "Mind");
             binder.readBean(searchDTO);
@@ -101,7 +98,7 @@ public class EmailsViewFactory {
             textFilter.addValueChangeListener(this::doSearch);
             domainFilter.addValueChangeListener(this::doSearch);
 
-            trashButton.addClickListener(this::deleteAll);
+
 
            /*int index = getComponentIndex(emailGrid);
             TableSelectionModel<EmailObject> selectionModel = new TableSelectionModel<>();
@@ -117,7 +114,7 @@ public class EmailsViewFactory {
 
         private void deleteAll(Button.ClickEvent clickEvent) {
             emailService.truncate();
-            mailListener.getDomains().clear();
+            emailService.getDomains().clear();
 
             domainFilter.setSelectedItem(domainFilter.getEmptySelectionCaption());
 
