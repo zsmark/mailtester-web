@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 @Service
 public final class MailSaver extends Observable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MailSaver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger("MailSaver.class");
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     // This can be a static variable since it is Thread Safe
     private static final Pattern SUBJECT_PATTERN = Pattern.compile("^Subject: (.*)$");
@@ -47,34 +47,11 @@ public final class MailSaver extends Observable {
         this.repository = repository;
     }
 
-    /**
-     * Saves incoming email in file system and notifies observers.
-     *
-     * @param from the user who send the email.
-     * @param to   the recipient of the email.
-     * @param data an InputStream object containing the email.
-     * @see com.nilhcem.fakesmtp.gui.MainPanel#addObservers to see which observers will be notified
-     */
+
     public void saveEmailAndNotify(String from, String to, InputStream data) {
 
         // We move everything that we can move outside the synchronized block to limit the impact
-        EmailObject model = new EmailObject();
-        model.setFrom(from);
-        model.setTo(to);
-        String mailContent = convertStreamToString(data);
-        model.setSubject(getSubjectFromStr(mailContent));
-        model.setEmailStr(mailContent);
 
-        synchronized (getLock()) {
-            String filePath = saveEmailToFile(mailContent);
-
-            model.setReceivedDate(new Date());
-            model.setFilePath(filePath);
-
-            setChanged();
-            notifyObservers(model);
-        }
-        repository.save(model);
     }
 
     /**

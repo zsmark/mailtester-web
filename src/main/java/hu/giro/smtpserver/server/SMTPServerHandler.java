@@ -2,7 +2,6 @@ package hu.giro.smtpserver.server;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.subethamail.smtp.helper.SimpleMessageListenerAdapter;
 import org.subethamail.smtp.server.SMTPServer;
 
-import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 
 /**
@@ -25,13 +23,19 @@ public class SMTPServerHandler {
     private static final Log LOGGER = LogFactory.getLog(SMTPServerHandler.class);
 
     @Autowired
-    private MailListenerFactory myListenerFactory;
+    private MailHandlerFactory handlerFactory;
 
     private SMTPServer smtpServer;
 
     @PostConstruct
     public void init(){
-        smtpServer  = new SMTPServer(new SimpleMessageListenerAdapter(myListenerFactory.createMailListener()), new SMTPAuthHandlerFactory());
+//        smtpServer  = new SMTPServer(new SimpleMessageListenerAdapter(myListenerFactory.createMailListener()), new SMTPAuthHandlerFactory());
+        smtpServer  = new SMTPServer(handlerFactory,new LoginAuthenticationHandlerFactory(new UsernamePasswordValidator() {
+            @Override
+            public void login(String username, String password) throws LoginFailedException {
+            //Mindent elfogadó authenticator
+            }
+        }));
     }
 
 
