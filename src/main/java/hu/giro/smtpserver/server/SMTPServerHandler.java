@@ -2,13 +2,15 @@ package hu.giro.smtpserver.server;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.subethamail.smtp.helper.SimpleMessageListenerAdapter;
+import org.subethamail.smtp.auth.LoginAuthenticationHandlerFactory;
 import org.subethamail.smtp.server.SMTPServer;
 
+import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 
 /**
@@ -22,36 +24,29 @@ public class SMTPServerHandler {
 
     private static final Log LOGGER = LogFactory.getLog(SMTPServerHandler.class);
 
-    @Autowired
-    private MailHandlerFactory handlerFactory;
+    private final MailHandlerFactory handlerFactory;
 
     private SMTPServer smtpServer;
 
     @PostConstruct
-    public void init(){
+    public void init() {
 //        smtpServer  = new SMTPServer(new SimpleMessageListenerAdapter(myListenerFactory.createMailListener()), new SMTPAuthHandlerFactory());
-        smtpServer  = new SMTPServer(handlerFactory,new LoginAuthenticationHandlerFactory(new UsernamePasswordValidator() {
-            @Override
-            public void login(String username, String password) throws LoginFailedException {
+        smtpServer = new SMTPServer(handlerFactory, new LoginAuthenticationHandlerFactory((username, password) -> {
             //Mindent elfogadó authenticator
-            }
         }));
     }
 
 
-    public SMTPServerHandler() {
+    @Autowired
+    public SMTPServerHandler(MailHandlerFactory handlerFactory) {
+        this.handlerFactory = handlerFactory;
     }
 
     public void startServer(int port, InetAddress bindAddress) throws Exception {
-        LOGGER.debug("Starting server on port "+port);
+        LOGGER.debug("Starting server on port " + port);
         smtpServer.setBindAddress(bindAddress);
         smtpServer.setPort(port);
         smtpServer.start();
-    }
-
-    //@Bean
-    public SMTPServerHandler smtpServerHandler()
-    {return new SMTPServerHandler();
     }
 
     /**
