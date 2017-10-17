@@ -1,18 +1,27 @@
 package hu.giro;
 
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.MultiPartEmail;
-import org.apache.commons.mail.SimpleEmail;
+import org.apache.commons.lang3.CharEncoding;
+import org.apache.commons.mail.*;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.ResourceUtils;
 
 import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -21,14 +30,20 @@ import javax.mail.internet.InternetAddress;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SpringdemoApplicationTests {
+    @Autowired
+    private JavaMailSender javaMailSender;
 
-    private Session session;
+    private static Session session;
     private String mailContentType = "html";
     private String mailEncoding = "UTF-8";
 
+
+    @BeforeClass
+    public static void init(){
+        initMail();
+    }
     @Test
     public void javaxMailTest() throws MessagingException {
-        initMail();
 
         List<InternetAddress> toList = new ArrayList<InternetAddress>();
 
@@ -39,7 +54,7 @@ public class SpringdemoApplicationTests {
                 "Subject", "Levél");
     }
 
-    private void initMail() {
+    private static void initMail() {
         final String username = "username@gmail.com";
         final String password = "password";
 
@@ -77,6 +92,58 @@ public class SpringdemoApplicationTests {
 
     }
 
+
+    @Test
+    public void springMailTest() throws Exception {
+        sendEmail("to1@mail.giro.hu","Tárgya","Szöveges tartalom!",false,false,null);
+    }
+
+    @Test
+    public void springHtmlMailTest() throws Exception {
+        String htmlBody ="<!DOCTYPE html>" +
+                "<html>" +
+                "<body>" +
+                "" +
+                "<h1>Email!</h1>" +
+                "<p>Hello </p>" +
+                "" +
+                "</body>" +
+                "</html>";
+
+        sendEmail("to1@mail.giro.hu","Tárgya",htmlBody,false,true,null);
+    }
+
+    @Test
+    public void springHtmlWithAttachmentMailTest() throws Exception {
+        String htmlBody ="<!DOCTYPE html>" +
+                "<html>" +
+                "<body>" +
+                "" +
+                "<h1>Email!</h1>" +
+                "<p>Hello </p>" +
+                "" +
+                "</body>" +
+                "</html>";
+        File file = ResourceUtils.getFile(this.getClass().getResource("/sample.pdf"));
+        sendEmail("to1@mail.giro.hu","Tárgya",htmlBody,true,true,file);
+    }
+
+    public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml,File attachment) throws Exception {
+
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, CharEncoding.UTF_8);
+        message.setTo(to);
+        message.setFrom("sender@test.hu");
+        message.setSubject(subject);
+        message.setText(content, isHtml);
+        if(null != attachment){
+            message.addAttachment(attachment.getName(),attachment);
+        }
+
+
+        javaMailSender.send(mimeMessage);
+    }
+
     @Test
     public void apacheMailTest() {
         try {
@@ -95,6 +162,33 @@ public class SpringdemoApplicationTests {
         } catch (EmailException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void sendWithAttachement() throws EmailException, FileNotFoundException {
+        MultiPartEmail email = new MultiPartEmail();
+        //email.setDebug(true);
+        email.setHostName("localhost");
+        email.setSmtpPort(2525);
+        email.setAuthentication("akarki", "pass");
+        email.setFrom("sender@test.hu");
+        email.setSubject("Test email");
+        email.setCharset("UTF8");
+        email.addTo("to1@mail.giro.hu", "to2@mail.giro.hu");
+        email.addCc("cc1@mail.giro.hu", "cc2@mail.giro.hu");
+        email.addBcc("bcc1@mail.giro.hu", "bcc2@mail.giro.hu");
+
+        //add attachement
+        EmailAttachment attachment = new EmailAttachment();
+        File file = ResourceUtils.getFile(this.getClass().getResource("/text.txt"));
+        attachment.setPath(file.getAbsolutePath());
+        attachment.setDisposition(EmailAttachment.ATTACHMENT);
+        attachment.setDescription("Szöveges csatolmány");
+        attachment.setName("szöveges");
+        email.attach(attachment);
+
+        email.send();
+
     }
 
     private InternetAddress[] getAddressList(String... addresses) {
