@@ -17,5 +17,5 @@ public interface EmailService {
 
     Set<String> getDomains();
 
-    String getEmailContent(EmailObject emailObject);
+    byte[] getEmailContent(EmailObject emailObject);
 }

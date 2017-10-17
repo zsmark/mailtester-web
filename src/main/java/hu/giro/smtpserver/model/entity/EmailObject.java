@@ -53,10 +53,6 @@ public class EmailObject implements Serializable{
     @Temporal(TemporalType.TIMESTAMP)
     private Date receivedDate;
 
-    @Lob
-    @Column(name = "CONTENT")
-    private byte[] content;
-
     @Version
     private Integer version;
 
@@ -133,14 +129,6 @@ public class EmailObject implements Serializable{
 
     public void setReceivedDate(Date receivedDate) {
         this.receivedDate = receivedDate;
-    }
-
-    public byte[] getContent() {
-        return content;
-    }
-
-    public void setContent(byte[] content) {
-        this.content = content;
     }
 
     public boolean isRead() {

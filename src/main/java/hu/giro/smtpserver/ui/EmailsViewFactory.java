@@ -155,7 +155,7 @@ public class EmailsViewFactory {
         private void viewEmailContent() {
             EmailObject selected = emailGrid.getSelectedItems().stream().findFirst().orElseGet(null);
             if(selected != null){
-                String emailString = emailService.getEmailContent(selected);//TODO IDE JÖHET A MEGJELENENÍTÉS
+                byte[] content = emailService.getEmailContent(selected);//TODO IDE JÖHET A MEGJELENENÍTÉS
             }
         }
     }

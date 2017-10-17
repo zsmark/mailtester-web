@@ -2,18 +2,14 @@ package hu.giro.smtpserver.model;
 
 import hu.giro.smtpserver.model.entity.EmailObject;
 import hu.giro.smtpserver.model.repository.EmailObjectRepository;
-import hu.giro.smtpserver.ui.EmailsViewFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -105,9 +101,9 @@ public class EmailServiceImpl implements EmailService {
 
     @Transactional
     @Override
-    public String getEmailContent(EmailObject emailObject) {
+    public byte[] getEmailContent(EmailObject emailObject) {
         emailObject = repository.findOne(emailObject.getId());
-        return emailObject.getEmailContent().getEmailStr();
+        return emailObject.getEmailContent().getContent();
     }
 
 }

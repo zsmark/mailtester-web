@@ -16,7 +16,7 @@
                 <constraints primaryKey="true" primaryKeyName="EMAIL_CONTENT_PK"/>
             </column>
             <column defaultValueNumeric="0" name="VERSION" type="INTEGER"/>
-            <column name="EMAIL_STRING" type="VARCHAR(2000)"/>
+            <column name="CONTENT" type="BLOB"/>
         </createTable>
     </changeSet>
     <changeSet author="zsidom" id="4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
@@ -37,7 +37,6 @@
             </column>
             <column name="READ" type="INTEGER"/>
             <column name="RECEIVED_DATE" type="TIMESTAMP"/>
-            <column name="CONTENT" type="BLOB"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

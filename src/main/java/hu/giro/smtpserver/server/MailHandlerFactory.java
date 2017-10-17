@@ -73,7 +73,7 @@ public class MailHandlerFactory implements MessageHandlerFactory {
                 email.setFrom(from);
                 email.setSource(source);
                 email.setSubject(getSubjectFromStr(mailContent));
-                email.setEmailContent(new EmailContent(mailContent));
+                email.setEmailContent(new EmailContent(mailContent.getBytes()));
                 email.setReceivedDate(new Date());
                 emailService.save(email);
                 log.info(String.format("Deliver from %s to %s", email.getFrom(), email.getRecipient()));

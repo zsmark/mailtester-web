@@ -16,18 +16,19 @@ public class EmailContent implements Serializable{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_MAIL")
     private Integer id;
 
-    @Column(name = "EMAIL_STRING")
-    private String emailStr;
+    @Lob
+    @Column(name = "CONTENT")
+    private byte[] content;
 
     @Version
     private Integer version;
 
 
-    public EmailContent(String emailStr) {
-        this.emailStr = emailStr;
+    public EmailContent() {
     }
 
-    public EmailContent() {
+    public EmailContent(byte[] content) {
+        this.content = content;
     }
 
     public Integer getId() {
@@ -38,15 +39,15 @@ public class EmailContent implements Serializable{
         this.id = id;
     }
 
-    public String getEmailStr() {
-        return emailStr;
-    }
-
-    public void setEmailStr(String emailStr) {
-        this.emailStr = emailStr;
-    }
-
     public Integer getVersion() {
         return version;
+    }
+
+    public byte[] getContent() {
+        return content;
+    }
+
+    public void setContent(byte[] content) {
+        this.content = content;
     }
 }
