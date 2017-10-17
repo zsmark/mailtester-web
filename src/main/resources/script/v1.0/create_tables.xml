@@ -7,6 +7,18 @@
     <changeSet author="zsidom" id="1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createSequence sequenceName="SEQ_MAIL"/>
     </changeSet>
+    <changeSet author="zsidom" id="2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="SEQ_MAIL_CONTENT"/>
+    </changeSet>
+    <changeSet author="zsidom" id="3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="EMAIL_CONTENT">
+            <column defaultValueSequenceNext="SEQ_MAIL_CONTENT" name="ID" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="EMAIL_CONTENT_PK"/>
+            </column>
+            <column defaultValueNumeric="0" name="VERSION" type="INTEGER"/>
+            <column name="EMAIL_STRING" type="VARCHAR(2000)"/>
+        </createTable>
+    </changeSet>
     <changeSet author="zsidom" id="4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="SENDED_MAIL">
             <column defaultValueSequenceNext="SEQ_MAIL" name="ID" type="INTEGER">
@@ -20,7 +32,9 @@
             <column name="CARBON_COPY" type="VARCHAR(500)"/>
             <column name="BLIND_CARBON_COPY" type="VARCHAR(500)"/>
             <column name="EMAIL_SUBJECT" type="VARCHAR(400)"/>
-            <column name="EMAIL_STRING" type="VARCHAR(2000)"/>
+            <column name="EMAIL_CONTENT" type="INTEGER">
+                <constraints foreignKeyName="email_content_fk" referencedColumnNames="ID" referencedTableName="EMAIL_CONTENT"/>
+            </column>
             <column name="READ" type="INTEGER"/>
             <column name="RECEIVED_DATE" type="TIMESTAMP"/>
             <column name="CONTENT" type="BLOB"/>

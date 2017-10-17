@@ -1,6 +1,7 @@
 package hu.giro.smtpserver.server;
 
 import hu.giro.smtpserver.model.EmailService;
+import hu.giro.smtpserver.model.entity.EmailContent;
 import hu.giro.smtpserver.model.entity.EmailObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -72,7 +73,7 @@ public class MailHandlerFactory implements MessageHandlerFactory {
                 email.setFrom(from);
                 email.setSource(source);
                 email.setSubject(getSubjectFromStr(mailContent));
-                email.setEmailStr(mailContent);
+                email.setEmailContent(new EmailContent(mailContent));
                 email.setReceivedDate(new Date());
                 emailService.save(email);
                 log.info(String.format("Deliver from %s to %s", email.getFrom(), email.getRecipient()));

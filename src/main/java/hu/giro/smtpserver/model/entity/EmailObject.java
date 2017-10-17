@@ -7,6 +7,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+import static javax.persistence.FetchType.LAZY;
+
 /**
  * Created by morti on 10/9/17.
  */
@@ -39,8 +41,9 @@ public class EmailObject implements Serializable{
     @Column(name = "EMAIL_SUBJECT")
     private String subject;
 
-    @Column(name = "EMAIL_STRING")
-    private String emailStr;
+    @JoinColumn(name = "EMAIL_CONTENT")
+    @ManyToOne(fetch = LAZY,cascade = CascadeType.ALL)
+    private EmailContent emailContent;
 
     @Type(type = "org.hibernate.type.NumericBooleanType")
     @Column(name = "READ")
@@ -116,12 +119,12 @@ public class EmailObject implements Serializable{
         this.subject = subject;
     }
 
-    public String getEmailStr() {
-        return emailStr;
+    public EmailContent getEmailContent() {
+        return emailContent;
     }
 
-    public void setEmailStr(String emailStr) {
-        this.emailStr = emailStr;
+    public void setEmailContent(EmailContent emailContent) {
+        this.emailContent = emailContent;
     }
 
     public Date getReceivedDate() {
