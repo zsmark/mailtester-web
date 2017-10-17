@@ -5,6 +5,7 @@ import com.vaadin.data.HasValue;
 import com.vaadin.data.ValidationException;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Page;
+import com.vaadin.shared.Registration;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.*;
@@ -39,6 +40,7 @@ public class EmailsViewFactory {
     public class EmailsView extends EmailsDesign implements View {
         private Binder<EmailSearchDTO> binder = new Binder<>(EmailSearchDTO.class);
         private EmailSearchDTO searchDTO = new EmailSearchDTO();
+        private Registration dfRegistration;
 
         public EmailsView() {
             super();
@@ -65,13 +67,14 @@ public class EmailsViewFactory {
         }
 
         private void updateDomains() {
-
-           // Optional<String> selected = domainFilter.getSelectedItem();
+            dfRegistration.remove();
+            Optional<String> selected = domainFilter.getSelectedItem();
             domainFilter.setItems(emailService.getDomains());
-            /*if (selected.isPresent() && emailService.getDomains().contains(selected.get()))
+            if (selected.isPresent() && emailService.getDomains().contains(selected.get()))
             {
                 domainFilter.setSelectedItem(selected.get());
-            }*/
+            }
+            dfRegistration = domainFilter.addValueChangeListener(this::doSearch);
         }
 
         private void init() {
@@ -99,7 +102,7 @@ public class EmailsViewFactory {
 
             readFilter.addValueChangeListener(this::doSearch);
             textFilter.addValueChangeListener(this::doSearch);
-            domainFilter.addValueChangeListener(this::doSearch);
+            dfRegistration = domainFilter.addValueChangeListener(this::doSearch);
 
 
 
