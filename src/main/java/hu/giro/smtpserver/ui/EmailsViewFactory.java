@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class EmailsViewFactory {
@@ -56,19 +57,21 @@ public class EmailsViewFactory {
 
         private void reload() {
             log.debug("Reloading");
+            Set<EmailObject> selected = emailGrid.getSelectedItems();
             emailGrid.setItems(emailService.findAll(searchDTO));
+            selected.forEach(email->emailGrid.select(email));
             updateDomains();
 
         }
 
         private void updateDomains() {
 
-//            Optional<String> selected = domainFilter.getSelectedItem();
+           // Optional<String> selected = domainFilter.getSelectedItem();
             domainFilter.setItems(emailService.getDomains());
-//            if (selected.isPresent() && mailListener.getDomains().contains(selected.get()))
-//            {
-//                domainFilter.setSelectedItem(selected.get());
-//            }
+            /*if (selected.isPresent() && emailService.getDomains().contains(selected.get()))
+            {
+                domainFilter.setSelectedItem(selected.get());
+            }*/
         }
 
         private void init() {
@@ -115,9 +118,7 @@ public class EmailsViewFactory {
         private void deleteAll(Button.ClickEvent clickEvent) {
             emailService.truncate();
             emailService.getDomains().clear();
-
             domainFilter.setSelectedItem(domainFilter.getEmptySelectionCaption());
-
             reload();
 
         }

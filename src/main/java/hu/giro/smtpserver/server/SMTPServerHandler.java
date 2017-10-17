@@ -3,11 +3,14 @@ package hu.giro.smtpserver.server;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 import org.subethamail.smtp.auth.LoginAuthenticationHandlerFactory;
+import org.subethamail.smtp.auth.LoginFailedException;
+import org.subethamail.smtp.auth.UsernamePasswordValidator;
 import org.subethamail.smtp.server.SMTPServer;
 
 import javax.annotation.PostConstruct;
@@ -19,20 +22,26 @@ import java.net.InetAddress;
  * @author Nilhcem
  * @since 1.0
  */
-@Component
+@Configuration
 public class SMTPServerHandler {
 
     private static final Log LOGGER = LogFactory.getLog(SMTPServerHandler.class);
 
-    private final MailHandlerFactory handlerFactory;
+    private MailHandlerFactory handlerFactory;
 
     private SMTPServer smtpServer;
 
+    @Value("${smtpserver.port}")
+    private int port;
+
     @PostConstruct
-    public void init() {
-//        smtpServer  = new SMTPServer(new SimpleMessageListenerAdapter(myListenerFactory.createMailListener()), new SMTPAuthHandlerFactory());
-        smtpServer = new SMTPServer(handlerFactory, new LoginAuthenticationHandlerFactory((username, password) -> {
+    public void init(){
+
+        smtpServer  = new SMTPServer(handlerFactory,new LoginAuthenticationHandlerFactory(new UsernamePasswordValidator() {
+            @Override
+            public void login(String username, String password) throws LoginFailedException {
             //Mindent elfogadó authenticator
+            }
         }));
     }
 
@@ -42,19 +51,13 @@ public class SMTPServerHandler {
         this.handlerFactory = handlerFactory;
     }
 
-    public void startServer(int port, InetAddress bindAddress) throws Exception {
-        LOGGER.debug("Starting server on port " + port);
+    public void startServer(int tcpport, InetAddress bindAddress) throws Exception {
+        LOGGER.debug("Starting server on port "+tcpport);
         smtpServer.setBindAddress(bindAddress);
-        smtpServer.setPort(port);
+        smtpServer.setPort(tcpport);
         smtpServer.start();
     }
 
-    /**
-     * Stops the server.
-     * <p>
-     * If the server is not started, does nothing special.
-     * </p>
-     */
     private void stopServer() {
         if (smtpServer.isRunning()) {
             LOGGER.debug("Stopping SMTP server");
@@ -62,11 +65,6 @@ public class SMTPServerHandler {
         }
     }
 
-    /**
-     * Returns the {@code SMTPServer} object.
-     *
-     * @return the {@code SMTPServer} object.
-     */
     public SMTPServer getSmtpServer() {
         return smtpServer;
     }
@@ -74,9 +72,8 @@ public class SMTPServerHandler {
 
     @EventListener(ContextRefreshedEvent.class)
     public void start() {
-
         try {
-            startServer(2525, null);
+            startServer(port, null);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,6 +89,5 @@ public class SMTPServerHandler {
     public boolean isRunning() {
         return smtpServer.isRunning();
     }
-
 
 }

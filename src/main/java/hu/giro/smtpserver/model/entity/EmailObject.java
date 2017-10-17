@@ -169,4 +169,19 @@ public class EmailObject implements Serializable{
     public String getRecipient() {
         return recipient;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EmailObject)) return false;
+
+        EmailObject that = (EmailObject) o;
+
+        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
+    }
 }

@@ -3,6 +3,8 @@ package hu.giro;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Properties;
+
 
 //@SpringBootApplication(exclude={DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
 //@EnableScheduling
@@ -10,6 +12,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringdemoApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringdemoApplication.class, args);
+        SpringApplication application = new SpringApplication(SpringdemoApplication.class);
+
+        /*try {
+            Properties extra = new Properties();
+            extra.put("server.port",Integer.parseInt(System.getProperty("port")));
+            application.setDefaultProperties(extra);
+            System.out.println();
+        } catch (Throwable e) {
+
+        }
+*/
+        application.run(args);
 	}
 }
