@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -100,6 +101,13 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public Set<String> getDomains() {
         return domains;
+    }
+
+    @Transactional
+    @Override
+    public String getEmailContent(EmailObject emailObject) {
+        emailObject = repository.findOne(emailObject.getId());
+        return emailObject.getEmailContent().getEmailStr();
     }
 
 }

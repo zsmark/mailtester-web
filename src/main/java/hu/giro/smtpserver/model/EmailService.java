@@ -16,4 +16,6 @@ public interface EmailService {
     void truncate();
 
     Set<String> getDomains();
+
+    String getEmailContent(EmailObject emailObject);
 }

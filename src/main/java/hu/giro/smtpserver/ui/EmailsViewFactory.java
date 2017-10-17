@@ -103,7 +103,11 @@ public class EmailsViewFactory {
             readFilter.addValueChangeListener(this::doSearch);
             textFilter.addValueChangeListener(this::doSearch);
             dfRegistration = domainFilter.addValueChangeListener(this::doSearch);
+            btnRead.setEnabled(false);
+            emailGrid.addSelectionListener(selectionEvent ->
+                btnRead.setEnabled(emailGrid.getSelectedItems().size() == 1));
 
+            btnRead.addClickListener(clickEvent -> viewEmailContent());
 
 
            /*int index = getComponentIndex(emailGrid);
@@ -148,6 +152,12 @@ public class EmailsViewFactory {
 
         }
 
+        private void viewEmailContent() {
+            EmailObject selected = emailGrid.getSelectedItems().stream().findFirst().orElseGet(null);
+            if(selected != null){
+                String emailString = emailService.getEmailContent(selected);//TODO IDE JÖHET A MEGJELENENÍTÉS
+            }
+        }
     }
 
     public com.vaadin.ui.Component create() {
