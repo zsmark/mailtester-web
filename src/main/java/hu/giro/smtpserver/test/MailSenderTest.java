@@ -57,8 +57,9 @@ public class MailSenderTest {
                 "" +
                 "</body>" +
                 "</html>";
+        File file = ResourceUtils.getFile(this.getClass().getResource("/text.txt"));
 
-        sendEmail(to,cc,bcc,  "Html levél", htmlBody, false, true, null);
+        sendEmail(to,cc,bcc,  "Html levél txt csatolmannyal", htmlBody, true, true, file);
     }
 
     private void ikatasMail() throws Exception {
