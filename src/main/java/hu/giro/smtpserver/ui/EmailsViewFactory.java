@@ -16,16 +16,29 @@ import hu.giro.smtpserver.model.EmailService;
 import hu.giro.smtpserver.model.entity.EmailObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.james.mime4j.codec.DecodeMonitor;
+import org.apache.james.mime4j.message.DefaultBodyDescriptorBuilder;
+import org.apache.james.mime4j.parser.ContentHandler;
+import org.apache.james.mime4j.parser.MimeStreamParser;
+import org.apache.james.mime4j.stream.BodyDescriptorBuilder;
+import org.apache.james.mime4j.stream.MimeConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.vaadin.teemusa.gridextensions.SelectGrid;
 import org.vaadin.teemusa.gridextensions.client.tableselection.TableSelectionState;
 import org.vaadin.teemusa.gridextensions.tableselection.TableSelectionModel;
+import tech.blueglacier.email.Attachment;
+import tech.blueglacier.email.Email;
+import tech.blueglacier.parser.CustomContentHandler;
 
+import javax.mail.internet.MimeMessage;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -61,7 +74,7 @@ public class EmailsViewFactory {
             log.debug("Reloading");
             Set<EmailObject> selected = emailGrid.getSelectedItems();
             emailGrid.setItems(emailService.findAll(searchDTO));
-            selected.forEach(email->emailGrid.select(email));
+            selected.forEach(email -> emailGrid.select(email));
             updateDomains();
 
         }
@@ -70,8 +83,7 @@ public class EmailsViewFactory {
             dfRegistration.remove();
             Optional<String> selected = domainFilter.getSelectedItem();
             domainFilter.setItems(emailService.getDomains());
-            if (selected.isPresent() && emailService.getDomains().contains(selected.get()))
-            {
+            if (selected.isPresent() && emailService.getDomains().contains(selected.get())) {
                 domainFilter.setSelectedItem(selected.get());
             }
             dfRegistration = domainFilter.addValueChangeListener(this::doSearch);
@@ -105,7 +117,7 @@ public class EmailsViewFactory {
             dfRegistration = domainFilter.addValueChangeListener(this::doSearch);
             btnRead.setEnabled(false);
             emailGrid.addSelectionListener(selectionEvent ->
-                btnRead.setEnabled(emailGrid.getSelectedItems().size() == 1));
+                    btnRead.setEnabled(emailGrid.getSelectedItems().size() == 1));
 
             btnRead.addClickListener(clickEvent -> viewEmailContent());
 
@@ -154,8 +166,16 @@ public class EmailsViewFactory {
 
         private void viewEmailContent() {
             EmailObject selected = emailGrid.getSelectedItems().stream().findFirst().orElseGet(null);
-            if(selected != null){
-                byte[] content = emailService.getEmailContent(selected);//TODO IDE JÖHET A MEGJELENENÍTÉS
+            if (selected == null) return;
+            try {
+                emailLayout.removeAllComponents();
+                emailLayout.addComponent(new EmailDisplay(emailService.getEmailContent(selected)));
+
+
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return;
             }
         }
     }

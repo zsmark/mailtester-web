@@ -179,7 +179,11 @@
             <version>3.5</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>tech.blueglacier</groupId>
+            <artifactId>email-mime-parser</artifactId>
+            <version>1.0.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -187,6 +191,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

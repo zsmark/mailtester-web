@@ -90,6 +90,7 @@ public class SimpleMailTests {
             email.addTo("to1@mail.giro.hu", "to2@mail.giro.hu");
             email.addCc("cc1@mail.giro.hu", "cc2@mail.giro.hu");
             email.addBcc("bcc1@mail.giro.hu", "bcc2@mail.giro.hu");
+
             email.send();
         } catch (EmailException e) {
             e.printStackTrace();

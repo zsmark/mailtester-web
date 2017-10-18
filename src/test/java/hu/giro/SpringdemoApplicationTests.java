@@ -42,7 +42,7 @@ public class SpringdemoApplicationTests {
     public static void init(){
         initMail();
     }
-    @Test
+    //@Test
     public void javaxMailTest() throws MessagingException {
 
         List<InternetAddress> toList = new ArrayList<InternetAddress>();
@@ -95,7 +95,7 @@ public class SpringdemoApplicationTests {
 
     @Test
     public void springMailTest() throws Exception {
-        sendEmail("to1@mail.giro.hu","Tárgya","Szöveges tartalom!",false,false,null);
+        sendEmail("to1@mail.giro.hu","Szöveges mail","Szöveges tartalom!",false,false,null);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class SpringdemoApplicationTests {
                 "</body>" +
                 "</html>";
 
-        sendEmail("to1@mail.giro.hu","Tárgya",htmlBody,false,true,null);
+        sendEmail("to1@mail.giro.hu","Html levél",htmlBody,false,true,null);
     }
 
     @Test
@@ -125,7 +125,7 @@ public class SpringdemoApplicationTests {
                 "</body>" +
                 "</html>";
         File file = ResourceUtils.getFile(this.getClass().getResource("/sample.pdf"));
-        sendEmail("to1@mail.giro.hu","Tárgya",htmlBody,true,true,file);
+        sendEmail("to1@mail.giro.hu","HTML levél csatolmánnyal",htmlBody,true,true,file);
     }
 
     public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml,File attachment) throws Exception {
@@ -144,7 +144,7 @@ public class SpringdemoApplicationTests {
         javaMailSender.send(mimeMessage);
     }
 
-    @Test
+    //@Test
     public void apacheMailTest() {
         try {
             Email email = new MultiPartEmail();
@@ -163,8 +163,7 @@ public class SpringdemoApplicationTests {
             e.printStackTrace();
         }
     }
-
-    @Test
+    //@Test
     public void sendWithAttachement() throws EmailException, FileNotFoundException {
         MultiPartEmail email = new MultiPartEmail();
         //email.setDebug(true);
