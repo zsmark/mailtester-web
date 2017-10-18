@@ -1,5 +1,6 @@
 package hu.giro.smtpserver.ui;
 
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.ContentMode;
@@ -21,6 +22,7 @@ import tech.blueglacier.parser.CustomContentHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 
 public class EmailDisplay extends VerticalLayout {
@@ -32,9 +34,14 @@ public class EmailDisplay extends VerticalLayout {
     private String body= "Üres";
     private boolean htmlType;
     private GridLayout headerLayout;
+    private Label hLine;
 
     public EmailDisplay(byte[] emailContent) throws IOException, MimeException {
         parseMail(emailContent);
+        setSpacing(false);
+        setSizeFull();
+        setMargin(false);
+        setId("emailDisplay");
         init();
     }
 
@@ -42,11 +49,18 @@ public class EmailDisplay extends VerticalLayout {
         createHeaderLayout();
         Label html = new Label(body);
         html.setContentMode(ContentMode.HTML);
-        html.setSizeFull();
-        addComponent(html);
+        Panel panel = new Panel();
+        html.setSizeUndefined();
+        
+        panel.setContent(html);
+        panel.setSizeFull();
+
+        addComponent(panel);
+        setExpandRatio(panel,1);
     }
 
     private void createHeaderLayout() {
+
         headerLayout = new GridLayout(2,4);
         Label fromLabel = new Label("Feladó: ");
         Label fromText = new Label(from);
@@ -63,7 +77,20 @@ public class EmailDisplay extends VerticalLayout {
         headerLayout.addComponent(copyText,1,2);
         headerLayout.addComponent(attachmentLabel,0,3);
         headerLayout.addComponent(createAttachmentButtons(),1,3);
+        headerLayout.setSpacing(true);
+        for (Component comp: Arrays.asList(fromLabel,toLabel,copyLabel,attachmentLabel))
+            headerLayout.setComponentAlignment(comp,Alignment.MIDDLE_RIGHT);
+        headerLayout.setWidth(100,Unit.PERCENTAGE);
+        headerLayout.setColumnExpandRatio(1,1);
         addComponent(headerLayout);
+        setComponentAlignment(headerLayout,Alignment.MIDDLE_LEFT);
+        hLine = new Label("<HR/>");
+        hLine.setContentMode(ContentMode.HTML);
+        hLine.setWidth(100,Unit.PERCENTAGE);
+        hLine.setHeight(3,Unit.PIXELS);
+        headerLayout.setWidth("100%");
+        addComponent(hLine);
+
     }
 
     private Component createAttachmentButtons() {
@@ -72,6 +99,7 @@ public class EmailDisplay extends VerticalLayout {
         if(attachments != null) {
             for (Attachment attachment : attachments) {
                 Button button = new Button(attachment.getAttachmentName());
+                button.setIcon(VaadinIcons.DOWNLOAD);
                 FileDownloader fileDownloader = new FileDownloader( new StreamResource((StreamResource.StreamSource) () -> {
                     try {
                         return new ByteArrayInputStream(IOUtils.toByteArray(attachment.getIs()));

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class SpringdemoApplicationTests {
+public class SimpleMailSendTest {
     @Autowired
     private JavaMailSender javaMailSender;
 

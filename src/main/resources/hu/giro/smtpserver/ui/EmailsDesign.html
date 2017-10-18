@@ -15,8 +15,10 @@
      <option item="Option3">Option 3</option>
     </vaadin-combo-box>
     <vaadin-text-field caption="Szöveg" _id="textFilter"></vaadin-text-field>
-    <hu_giro_smtpserver_ui-true-false-all-group _id="readFilter" :bottom :expand></hu_giro_smtpserver_ui-true-false-all-group>
-    <vaadin-horizontal-layout width="380px" :bottom :right :expand></vaadin-horizontal-layout>
+    <hu_giro_smtpserver_ui-true-false-all-group _id="readFilter" :bottom :expand="10"></hu_giro_smtpserver_ui-true-false-all-group>
+    <vaadin-horizontal-layout :bottom :right :expand>
+     <vaadin-button icon="fonticon://Vaadin-Icons/e703" plain-text _id="saveButton" :middle :right></vaadin-button>
+    </vaadin-horizontal-layout>
    </vaadin-horizontal-layout>
    <vaadin-grid width-full height="20em" data-item-type="hu.giro.smtpserver.model.entity.EmailObject" selection-mode="multi" _id="emailGrid">
     <table>
@@ -39,7 +41,7 @@
      <tbody></tbody>
     </table>
    </vaadin-grid>
-   <vaadin-horizontal-layout _id="emailLayout" :expand="10"></vaadin-horizontal-layout>
+   <vaadin-horizontal-layout size-full _id="emailLayout" :expand="10"></vaadin-horizontal-layout>
   </vaadin-vertical-layout>
  </body>
 </html>
