@@ -3,6 +3,7 @@ package hu.giro.smtpserver.test;
 import hu.giro.smtpserver.server.SMTPServerHandler;
 import org.apache.commons.lang3.CharEncoding;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -27,24 +28,28 @@ public class MailSenderTest {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    @EventListener(ContextRefreshedEvent.class)
+    @Value("#{systemProperties['withtestdata'] != null}")
+    boolean testMode;
+
+    @EventListener(value = ContextRefreshedEvent.class)
     @Order(2)
     public void send() {
-        try {
-            springMailTest();
-            springHtmlMailTest();
-            ikatasMail();
-            ikatasMail();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (testMode) {
+            try {
+                springMailTest();
+                springHtmlMailTest();
+                ikatasMail();
+                ikatasMail();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
 
     private void springMailTest() throws Exception {
 
-        sendEmail(to,cc,bcc, "Szöveges mail", "Szöveges tartalom!", false, false, null);
+        sendEmail(to, cc, bcc, "Szöveges mail", "Szöveges tartalom!", false, false, null);
     }
 
     private void springHtmlMailTest() throws Exception {
@@ -59,7 +64,7 @@ public class MailSenderTest {
                 "</html>";
         File file = ResourceUtils.getFile(this.getClass().getResource("/text.txt"));
 
-        sendEmail(to,cc,bcc,  "Html levél txt csatolmannyal", htmlBody, true, true, file);
+        sendEmail(to, cc, bcc, "Html levél txt csatolmannyal", htmlBody, true, true, file);
     }
 
     private void ikatasMail() throws Exception {
@@ -83,10 +88,10 @@ public class MailSenderTest {
                 "Köszönettel: <br>" +
                 "50Cent";
         File file = ResourceUtils.getFile(this.getClass().getResource("/sample.pdf"));
-        sendEmail(to,cc,bcc,  "Iktatás", htmlBody, true, true, file);
+        sendEmail(to, cc, bcc, "Iktatás", htmlBody, true, true, file);
     }
 
-    private void sendEmail(List<String> to,List<String> cc,List<String> bcc, String subject, String content, boolean isMultipart, boolean isHtml, File attachment) throws Exception {
+    private void sendEmail(List<String> to, List<String> cc, List<String> bcc, String subject, String content, boolean isMultipart, boolean isHtml, File attachment) throws Exception {
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, CharEncoding.UTF_8);
