@@ -1,10 +1,12 @@
 package hu.giro.smtpserver.ui;
 
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.ContentMode;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.NullInputStream;
+import org.apache.commons.io.output.NullOutputStream;
 import org.apache.james.mime4j.MimeException;
 import org.apache.james.mime4j.codec.DecodeMonitor;
 import org.apache.james.mime4j.message.DefaultBodyDescriptorBuilder;
@@ -60,7 +62,29 @@ public class EmailDisplay extends VerticalLayout {
         headerLayout.addComponent(copyLabel,0,2);
         headerLayout.addComponent(copyText,1,2);
         headerLayout.addComponent(attachmentLabel,0,3);
+        headerLayout.addComponent(createAttachmentButtons(),1,3);
         addComponent(headerLayout);
+    }
+
+    private Component createAttachmentButtons() {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setSpacing(true);
+        if(attachments != null) {
+            for (Attachment attachment : attachments) {
+                Button button = new Button(attachment.getAttachmentName());
+                FileDownloader fileDownloader = new FileDownloader( new StreamResource((StreamResource.StreamSource) () -> {
+                    try {
+                        return new ByteArrayInputStream(IOUtils.toByteArray(attachment.getIs()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return new NullInputStream(0);
+                }, attachment.getAttachmentName()));
+                fileDownloader.extend(button);
+                horizontalLayout.addComponent(button);
+            }
+        }
+        return horizontalLayout;
     }
 
     private String convertToString(Attachment attachment) throws IOException {

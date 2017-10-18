@@ -3,9 +3,12 @@ package hu.giro.smtpserver.ui;
 import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue;
 import com.vaadin.data.ValidationException;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Registration;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.*;
@@ -115,11 +118,21 @@ public class EmailsViewFactory {
             readFilter.addValueChangeListener(this::doSearch);
             textFilter.addValueChangeListener(this::doSearch);
             dfRegistration = domainFilter.addValueChangeListener(this::doSearch);
-            btnRead.setEnabled(false);
-            emailGrid.addSelectionListener(selectionEvent ->
-                    btnRead.setEnabled(emailGrid.getSelectedItems().size() == 1));
+            emailGrid.setSelectionMode(SelectionMode.SINGLE);
+            emailGrid.addSelectionListener(selectionEvent ->viewEmailContent());
+            emailGrid.addShortcutListener(new ShortcutListener("READED", ShortcutAction.KeyCode.DELETE,null) {
+                @Override
+                public void handleAction(Object sender, Object target) {
+                    if ((target != null) && (target instanceof Grid)) {
 
-            btnRead.addClickListener(clickEvent -> viewEmailContent());
+                        Grid<EmailObject> targetGrid = (Grid) target;
+                        if(!targetGrid.getSelectedItems().isEmpty()){
+                            targetGrid.getSelectedItems().forEach(o -> o.setRead(true));
+                        }
+                    }
+                }
+            });
+
 
 
            /*int index = getComponentIndex(emailGrid);
@@ -165,7 +178,10 @@ public class EmailsViewFactory {
         }
 
         private void viewEmailContent() {
-            EmailObject selected = emailGrid.getSelectedItems().stream().findFirst().orElseGet(null);
+            if(emailGrid.getSelectedItems().isEmpty())
+                return;
+
+            EmailObject selected = emailGrid.getSelectedItems().stream().findAny().orElse(null);
             if (selected == null) return;
             try {
                 emailLayout.removeAllComponents();

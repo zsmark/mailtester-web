@@ -7,7 +7,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 
 /**
@@ -25,8 +24,6 @@ public class EmailsDesign extends VerticalLayout {
     protected ComboBox<String> domainFilter;
     protected TextField textFilter;
     protected TrueFalseAllGroup readFilter;
-    protected Button btnRead;
-    protected Button markRead;
     protected Grid<hu.giro.smtpserver.model.entity.EmailObject> emailGrid;
     protected HorizontalLayout emailLayout;
 
