@@ -2,7 +2,6 @@ package hu.giro.smtpserver.test;
 
 import org.apache.commons.lang3.CharEncoding;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,7 +11,6 @@ import org.springframework.util.ResourceUtils;
 
 import javax.mail.internet.MimeMessage;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,8 +29,8 @@ public class MailSenderTest {
         try {
             springMailTest();
             springHtmlMailTest();
-            springHtmlWithAttachmentMailTest();
-            springHtmlWithAttachmentMailTest();
+            ikatasMail();
+            ikatasMail();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,18 +57,28 @@ public class MailSenderTest {
         sendEmail(to,cc,bcc,  "Html levél", htmlBody, false, true, null);
     }
 
-    private void springHtmlWithAttachmentMailTest() throws Exception {
-        String htmlBody = "<!DOCTYPE html>" +
-                "<html>" +
-                "<body>" +
-                "" +
-                "<h1>Email!</h1>" +
-                "<p>Hello </p>" +
-                "" +
-                "</body>" +
-                "</html>";
+    private void ikatasMail() throws Exception {
+        String htmlBody = "Kedves Iktatás!<br>" +
+                "<br>" +
+                "1.)\tFeladat leírása (ELŐZMÉNY): <br>" +
+                "  Instant utalás elkészítése   <br>" +
+                "<br>" +
+                "2.) Érintett szolgáltatás (TÁRGY): <br>" +
+                "  Nincs   <br>" +
+                "<br>" +
+                "3.) Külsős fejlesztő (PARTNER):<br>" +
+                "  Nincs   <br>" +
+                "<br>" +
+                "4.) Feladat felelőse (FELELŐS): <br>" +
+                "   Thor <br>" +
+                "<br>" +
+                "5.) Érintettek (ÉRDEKELTEK): <br>" +
+                "   Merlin, Dijkstra  <br>" +
+                "<br>" +
+                "Köszönettel: <br>" +
+                "50Cent";
         File file = ResourceUtils.getFile(this.getClass().getResource("/sample.pdf"));
-        sendEmail(to,cc,bcc,  "HTML levél csatolmánnyal", htmlBody, true, true, file);
+        sendEmail(to,cc,bcc,  "Iktatás", htmlBody, true, true, file);
     }
 
     private void sendEmail(List<String> to,List<String> cc,List<String> bcc, String subject, String content, boolean isMultipart, boolean isHtml, File attachment) throws Exception {
