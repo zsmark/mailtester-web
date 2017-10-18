@@ -1,6 +1,7 @@
 package hu.giro.smtpserver.ui;
 
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import org.apache.commons.io.IOUtils;
@@ -28,19 +29,38 @@ public class EmailDisplay extends VerticalLayout {
     String to, cc, from;
     private String body= "Üres";
     private boolean htmlType;
+    private GridLayout headerLayout;
 
     public EmailDisplay(byte[] emailContent) throws IOException, MimeException {
-
         parseMail(emailContent);
         init();
     }
 
     private void init() {
-
+        createHeaderLayout();
         Label html = new Label(body);
         html.setContentMode(ContentMode.HTML);
         html.setSizeFull();
         addComponent(html);
+    }
+
+    private void createHeaderLayout() {
+        headerLayout = new GridLayout(2,4);
+        Label fromLabel = new Label("Feladó: ");
+        Label fromText = new Label(from);
+        Label toLabel = new Label("Címzettek: ");
+        Label toText = new Label(to);
+        Label copyLabel = new Label("Másolat: ");
+        Label copyText = new Label(cc);
+        Label attachmentLabel = new Label("Csatolmányok: ");
+        headerLayout.addComponent(fromLabel,0,0);
+        headerLayout.addComponent(fromText,1,0);
+        headerLayout.addComponent(toLabel,0,1);
+        headerLayout.addComponent(toText,1,1);
+        headerLayout.addComponent(copyLabel,0,2);
+        headerLayout.addComponent(copyText,1,2);
+        headerLayout.addComponent(attachmentLabel,0,3);
+        addComponent(headerLayout);
     }
 
     private String convertToString(Attachment attachment) throws IOException {
