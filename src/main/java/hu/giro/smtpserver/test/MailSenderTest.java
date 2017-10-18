@@ -1,9 +1,12 @@
 package hu.giro.smtpserver.test;
 
+import hu.giro.smtpserver.server.SMTPServerHandler;
 import org.apache.commons.lang3.CharEncoding;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -25,6 +28,7 @@ public class MailSenderTest {
     private JavaMailSender javaMailSender;
 
     @EventListener(ContextRefreshedEvent.class)
+    @Order(2)
     public void send() {
         try {
             springMailTest();

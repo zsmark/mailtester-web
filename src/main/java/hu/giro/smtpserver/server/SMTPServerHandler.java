@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.subethamail.smtp.auth.LoginAuthenticationHandlerFactory;
 import org.subethamail.smtp.auth.LoginFailedException;
 import org.subethamail.smtp.auth.UsernamePasswordValidator;
@@ -71,6 +72,7 @@ public class SMTPServerHandler {
 
 
     @EventListener(ContextRefreshedEvent.class)
+    @Order(1)
     public void start() {
         try {
             startServer(port, null);
