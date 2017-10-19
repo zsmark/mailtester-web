@@ -8,9 +8,8 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.UI;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Theme("valo")
+@Theme("custom")
 @SpringUI
-//@Viewport("width=device-width,initial-scale=1.0,user-scalable=no")
 @Title("Mailtester web")
 public class WebUI extends UI {
 

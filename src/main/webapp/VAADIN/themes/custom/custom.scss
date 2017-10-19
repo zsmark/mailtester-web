@@ -1,0 +1,26 @@
+@import "../valo/valo.scss";
+
+@include valo;
+
+.bold { font-weight: bold;}
+
+.v-button .nude {
+  border: none;
+  background-color: white;
+  background-image: none;
+}
+
+.nude {
+  border: none !important;
+  background-color: $v-background-color !important;
+  background-image: none !important;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.nude:hover {
+  border: none !important;
+  background-color: $v-background-color !important;
+  background-image: none !important;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}

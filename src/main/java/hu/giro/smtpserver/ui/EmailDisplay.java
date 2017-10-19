@@ -5,6 +5,7 @@ import com.vaadin.server.FileDownloader;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.NullInputStream;
 import org.apache.commons.io.output.NullOutputStream;
@@ -15,6 +16,7 @@ import org.apache.james.mime4j.parser.ContentHandler;
 import org.apache.james.mime4j.parser.MimeStreamParser;
 import org.apache.james.mime4j.stream.BodyDescriptorBuilder;
 import org.apache.james.mime4j.stream.MimeConfig;
+import org.vaadin.alump.labelbutton.LabelButton;
 import tech.blueglacier.email.Attachment;
 import tech.blueglacier.email.Email;
 import tech.blueglacier.parser.CustomContentHandler;
@@ -100,6 +102,11 @@ public class EmailDisplay extends VerticalLayout {
             for (Attachment attachment : attachments) {
                 Button button = new Button(attachment.getAttachmentName());
                 button.setIcon(VaadinIcons.DOWNLOAD);
+                button.addStyleName(ValoTheme.BUTTON_BORDERLESS );
+                button.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_RIGHT);
+                /*button.setStyleName("nude");
+                Label l = new Label("F");
+*/
                 FileDownloader fileDownloader = new FileDownloader( new StreamResource((StreamResource.StreamSource) () -> {
                     try {
                         return new ByteArrayInputStream(IOUtils.toByteArray(attachment.getIs()));

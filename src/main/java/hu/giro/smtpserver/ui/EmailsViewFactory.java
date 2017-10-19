@@ -8,48 +8,26 @@ import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.Page;
-import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.Registration;
-import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.*;
-import com.vaadin.ui.components.grid.GridSelectionModel;
+import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import hu.giro.smtpserver.model.EmailSearchDTO;
 import hu.giro.smtpserver.model.EmailService;
 import hu.giro.smtpserver.model.entity.EmailObject;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.NullInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.james.mime4j.codec.DecodeMonitor;
-import org.apache.james.mime4j.message.DefaultBodyDescriptorBuilder;
-import org.apache.james.mime4j.parser.ContentHandler;
-import org.apache.james.mime4j.parser.MimeStreamParser;
-import org.apache.james.mime4j.stream.BodyDescriptorBuilder;
-import org.apache.james.mime4j.stream.MimeConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.vaadin.teemusa.gridextensions.SelectGrid;
-import org.vaadin.teemusa.gridextensions.client.tableselection.TableSelectionState;
-import org.vaadin.teemusa.gridextensions.tableselection.TableSelectionModel;
-import tech.blueglacier.email.Attachment;
-import tech.blueglacier.email.Email;
-import tech.blueglacier.parser.CustomContentHandler;
 
-import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Component
 public class EmailsViewFactory {
@@ -75,7 +53,7 @@ public class EmailsViewFactory {
             addAttachListener(e -> {
                 getUI().setPollInterval(10000);
                 getUI().addPollListener(pollEvent -> reload());
-                Page.getCurrent().getStyles().add(".bold { font-weight: bold;}");
+//                Page.getCurrent().getStyles().add(".bold { font-weight: bold;}");
             });
 
 
@@ -202,14 +180,17 @@ public class EmailsViewFactory {
 
             EmailObject selected = getSelectedEmail();
             saveButton.setEnabled(selected!=null);
+
+            if (selected == null) return;
+
             fileDownloader.setFileDownloadResource(
                     new StreamResource(new StreamResource.StreamSource() {
-                @Override
-                public InputStream getStream() {
-                    return new ByteArrayInputStream(emailService.getEmailContent(selected));
-                }
-            },"mailtester_"+selected.getId()+".mht"));
-            if (selected == null) return;
+                        @Override
+                        public InputStream getStream() {
+                            return new ByteArrayInputStream(emailService.getEmailContent(selected));
+                        }
+                    },"mailtester_"+selected.getId()+".mht"));
+
             try {
                 emailLayout.addComponent(new EmailDisplay(emailService.getEmailContent(selected)));
             } catch (Exception ex) {
