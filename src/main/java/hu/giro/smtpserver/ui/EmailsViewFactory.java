@@ -131,7 +131,7 @@ public class EmailsViewFactory {
 
                         Grid<EmailObject> targetGrid = (Grid) target;
                         EmailObject selected = getSelectedEmail();
-                        if (selected != null) {
+                        if (selected != null && !selected.isRead()) {
                             selected.setRead(true);
                             emailService.save(selected);
                             emailGrid.getDataProvider().refreshItem(selected);
