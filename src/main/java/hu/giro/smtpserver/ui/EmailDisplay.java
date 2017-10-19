@@ -9,6 +9,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.NullInputStream;
 import org.apache.commons.io.output.NullOutputStream;
+import org.apache.commons.logging.LogFactory;
 import org.apache.james.mime4j.MimeException;
 import org.apache.james.mime4j.codec.DecodeMonitor;
 import org.apache.james.mime4j.message.DefaultBodyDescriptorBuilder;
@@ -128,7 +129,8 @@ public class EmailDisplay extends VerticalLayout {
 
     private void parseMail(byte[] emailContent) throws MimeException, IOException {
         String x = new String(emailContent,"UTF8");
-        System.out.println(x);
+        LogFactory.getLog("EmailDisplay.parseMail").debug(x);
+        //System.out.println(x);
         ContentHandler contentHandler = new CustomContentHandler();
 
         MimeConfig mime4jParserConfig = MimeConfig.DEFAULT;
