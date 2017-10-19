@@ -3,6 +3,8 @@ package hu.giro.smtpserver.ui;
 import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue;
 import com.vaadin.data.ValidationException;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
@@ -26,7 +28,9 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -129,11 +133,15 @@ public class EmailsViewFactory {
                         EmailObject selected = getSelectedEmail();
                         if (selected != null) {
                             selected.setRead(true);
+                            emailService.save(selected);
+                            emailGrid.getDataProvider().refreshItem(selected);
+                            selectNextMail();
                             //TODO save nem kell ?
                         }
                     }
                 }
             });
+
             saveButton.setEnabled(false);
             fileDownloader = new FileDownloader(new DummyResource());
             fileDownloader.extend(saveButton);
@@ -148,6 +156,15 @@ public class EmailsViewFactory {
             } catch (Exception e) {
                 e.printStackTrace();
             }*/
+        }
+
+        private void selectNextMail() {
+            EmailObject selected = getSelectedEmail();
+            if (selected==null) return;
+            List<EmailObject> items = (List<EmailObject>) ((ListDataProvider<EmailObject>) emailGrid.getDataProvider()).getItems();
+            int index = items.indexOf(selected);
+            if (index<items.size()-1)
+                emailGrid.select(items.get(index+1));
         }
 
 
@@ -189,7 +206,7 @@ public class EmailsViewFactory {
                         public InputStream getStream() {
                             return new ByteArrayInputStream(emailService.getEmailContent(selected));
                         }
-                    },"mailtester_"+selected.getId()+".mht"));
+                    },"mailtester_"+selected.getId()+".eml"));
 
             try {
                 emailLayout.addComponent(new EmailDisplay(emailService.getEmailContent(selected)));
