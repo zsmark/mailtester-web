@@ -5,8 +5,13 @@
 @import "../../../VAADIN/addons/vaadin-icons/vaadin-icons.scss";
 
 
+/* Provided by labelbutton-addon-0.2.0.jar */
+@import "../../../VAADIN/addons/labelbutton/labelbutton.scss";
+
+
 /* Import and include this mixin into your project theme to include the addon themes */
 @mixin addons {
 	@include vaadin-icons;
+	@include labelbutton;
 }
 
