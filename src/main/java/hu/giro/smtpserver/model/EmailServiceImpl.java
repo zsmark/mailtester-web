@@ -145,4 +145,22 @@ public class EmailServiceImpl implements EmailService {
         return dto;
     }
 
+    @Override
+    public List<EmailObject> findAllByRecipient(String recipient) {
+        return repository.findAll((root, criteriaQuery, criteriaBuilder) -> {
+            Predicate predicate = criteriaBuilder.isTrue(criteriaBuilder.literal(true));
+            if (recipient != null && recipient.length() > 0) {
+                Path<String> recipientPath = root.get("recipient");
+
+                String likeTxt = ("%" + recipient + "%").toLowerCase();
+                predicate = criteriaBuilder.and(predicate,
+                        criteriaBuilder.or(
+                                criteriaBuilder.like(criteriaBuilder.lower(recipientPath), likeTxt)
+                        )
+                );
+            }
+            return predicate;
+        }, new Sort(Sort.Direction.ASC, "id"));
+    }
+
 }

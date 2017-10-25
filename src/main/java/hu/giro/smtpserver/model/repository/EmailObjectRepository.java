@@ -8,11 +8,14 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface EmailObjectRepository extends JpaRepository<EmailObject,Integer>, JpaSpecificationExecutor<EmailObject> {
     @Modifying
     @Transactional
     void deleteByReceivedDateBefore(Date date);
+
+    List<EmailObject> findAllByRecipientLike(String recipient);
 
 }

@@ -7,17 +7,27 @@ public class EmailRestDto implements Serializable {
 
     private Integer id;
     private String from;
+    private String recipient;
     private String subject;
     private Date receivedDate;
 
     public EmailRestDto() {
     }
 
-    public EmailRestDto(Integer id, String from, String subject, Date receivedDate) {
+    public EmailRestDto(Integer id, String from, String subject, Date receivedDate, String recipient) {
         this.id = id;
         this.from = from;
         this.subject = subject;
         this.receivedDate = receivedDate;
+        this.recipient = recipient;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public Integer getId() {

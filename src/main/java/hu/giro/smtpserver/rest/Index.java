@@ -51,6 +51,11 @@ public class Index {
         List<EmailObject> result = service.findByContent(content);
         return result.stream().map(emailObject -> modelMapper.map(emailObject,EmailRestDto.class)).collect(Collectors.toList());
     }
+    @GetMapping(value = "findByRecipient")
+    public List<EmailRestDto> findByRecipient(@RequestParam("recipient") String recipient) {
+        List<EmailObject> result = service.findAllByRecipient(recipient);
+        return result.stream().map(emailObject -> modelMapper.map(emailObject,EmailRestDto.class)).collect(Collectors.toList());
+    }
 
     @GetMapping(value = "getContentById")
     public EmailContentDto getContentById(@RequestParam("id") Integer id){

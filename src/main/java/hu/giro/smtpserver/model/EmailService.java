@@ -24,4 +24,6 @@ public interface EmailService {
     EmailObject findContentByEmaiLId(Integer id);
 
      EmailContentDto convertContentDto(EmailObject emailObject);
+
+    List<EmailObject> findAllByRecipient(String recipient);
 }
