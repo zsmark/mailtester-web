@@ -18,4 +18,10 @@ public interface EmailService {
     Set<String> getDomains();
 
     byte[] getEmailContent(EmailObject emailObject);
+
+    List<EmailObject> findByContent(String content);
+
+    EmailObject findContentByEmaiLId(Integer id);
+
+     EmailContentDto convertContentDto(EmailObject emailObject);
 }

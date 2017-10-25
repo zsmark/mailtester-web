@@ -10,8 +10,9 @@ import javax.transaction.Transactional;
 import java.util.Date;
 
 @Repository
-public interface EmailObjectRepository extends JpaRepository<EmailObject,Integer>, JpaSpecificationExecutor {
+public interface EmailObjectRepository extends JpaRepository<EmailObject,Integer>, JpaSpecificationExecutor<EmailObject> {
     @Modifying
     @Transactional
     void deleteByReceivedDateBefore(Date date);
+
 }

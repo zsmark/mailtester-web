@@ -4,7 +4,9 @@ import hu.giro.smtpserver.model.entity.EmailObject;
 import hu.giro.smtpserver.model.repository.EmailObjectRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +28,12 @@ public class EmailServiceImpl implements EmailService {
 
     private Set<String> domains = new TreeSet<String>();
 
+    private final ModelMapper mapper;
 
     @Autowired
-    public EmailServiceImpl(EmailObjectRepository repository) {
+    public EmailServiceImpl(EmailObjectRepository repository, ModelMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -58,7 +62,7 @@ public class EmailServiceImpl implements EmailService {
 
     }
 
-    public class EmailSearchSpecification implements Specification {
+    public class EmailSearchSpecification implements Specification<EmailObject> {
         private final EmailSearchDTO search;
 
         public EmailSearchSpecification(EmailSearchDTO search) {
@@ -87,7 +91,7 @@ public class EmailServiceImpl implements EmailService {
                 );
             }
             if (search.getDomainFilter() != null && search.getDomainFilter().length() > 0) {
-               // String likeTxt = ("%@" + search.getDomainFilter()).toLowerCase();
+                // String likeTxt = ("%@" + search.getDomainFilter()).toLowerCase();
                 predicate = cb.and(predicate, cb.equal(root.get("source"), search.getDomainFilter()));
             }
             return predicate;
@@ -104,6 +108,41 @@ public class EmailServiceImpl implements EmailService {
     public byte[] getEmailContent(EmailObject emailObject) {
         emailObject = repository.findOne(emailObject.getId());
         return emailObject.getEmailContent().getContent();
+    }
+
+    @Override
+    public List<EmailObject> findByContent(String content) {
+        return repository.findAll((root, criteriaQuery, criteriaBuilder) -> {
+            Predicate predicate = criteriaBuilder.isTrue(criteriaBuilder.literal(true));
+            if (content != null && content.length() > 0) {
+                Path<String> to = root.get("recipient");
+                Path<String> subject = root.get("subject");
+                Path<String> cc = root.get("cc");
+
+                String likeTxt = ("%" + content + "%").toLowerCase();
+                predicate = criteriaBuilder.and(predicate,
+                        criteriaBuilder.or(
+                                criteriaBuilder.like(criteriaBuilder.lower(subject), likeTxt),
+                                criteriaBuilder.like(criteriaBuilder.lower(to), likeTxt),
+                                criteriaBuilder.like(criteriaBuilder.lower(cc), likeTxt)
+                        )
+                );
+            }
+            return predicate;
+        }, new Sort(Sort.Direction.ASC, "id"));
+    }
+
+    @Override
+    public EmailObject findContentByEmaiLId(Integer id) {
+        return repository.findOne(id);
+    }
+
+    @Transactional
+    @Override
+    public EmailContentDto convertContentDto(EmailObject emailObject) {
+        emailObject = repository.findOne(emailObject.getId());
+        EmailContentDto dto = mapper.map(emailObject.getEmailContent(),EmailContentDto.class);
+        return dto;
     }
 
 }
