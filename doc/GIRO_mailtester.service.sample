@@ -1,0 +1,11 @@
+[Unit]
+Description=myapp
+After=syslog.target
+
+[Service]
+User=mailtester
+ExecStart=/opt/mailtester/mailtester-web-0.1.jar
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
