@@ -39,7 +39,7 @@ public class EmailsViewFactory {
     private EmailService emailService;
 
     static private Log log = LogFactory.getLog(EmailsViewFactory.class);
-    static private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+    static private SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy.MM.dd/HH:mm:ss");
 
     public class EmailsView extends EmailsDesign implements View {
         private Binder<EmailSearchDTO> binder = new Binder<>(EmailSearchDTO.class);
