@@ -27,85 +27,88 @@ import java.util.Properties;
 
 @Component
 public class MailHandlerFactory implements MessageHandlerFactory {
-    private static Log log = LogFactory.getLog(MailHandler.class);
+  private static Log log = LogFactory.getLog(MailHandler.class);
 
-    private final EmailService emailService;
+  private final EmailService emailService;
 
-    @Autowired
-    public MailHandlerFactory(EmailService emailService) {
-        this.emailService = emailService;
+  @Autowired
+  public MailHandlerFactory(EmailService emailService) {
+    this.emailService = emailService;
+  }
+
+  public MessageHandler create(MessageContext ctx) {
+    return new MailHandler(ctx);
+  }
+
+  class MailHandler implements MessageHandler {
+    private final MessageContext ctx;
+    private String source;
+    private List<EmailObject> emails = new ArrayList<>();
+    private String from;
+
+
+    public MailHandler(MessageContext ctx) {
+      this.ctx = ctx;
+
+      this.source = (String) ctx.getAuthenticationHandler().getIdentity();
+      if (source == null) {
+        this.source = ctx.getRemoteAddress().toString();
+      }
     }
 
-    public MessageHandler create(MessageContext ctx) {
-        return new MailHandler(ctx);
+    public void from(String from) throws RejectException {
+      this.from = from; //ez fix mindegyik esetén
     }
 
-    class MailHandler implements MessageHandler {
-        private final MessageContext ctx;
-        private final String source;
-        private List<EmailObject> emails = new ArrayList<>();
-        private String from;
-
-
-        public MailHandler(MessageContext ctx) {
-            this.ctx = ctx;
-
-            this.source = (String) ctx.getAuthenticationHandler().getIdentity();
-        }
-
-        public void from(String from) throws RejectException {
-            this.from = from ; //ez fix mindegyik esetén
-        }
-
-        public void recipient(String recipient) throws RejectException {
-            EmailObject email = new EmailObject();
-            email.setRecipient(recipient);
-            emails.add(email);
-        }
-
-        public void data(InputStream data) throws IOException {
-
-
-            //mailSaver.saveEmailAndNotify(from, recipient, data);
-
-            String mailContent = convertStreamToString(data);
-            for (EmailObject email:emails) {
-                email.setFrom(from);
-                email.setSource(source);
-                email.setSubject(getSubjectFromStr(mailContent));
-                email.setEmailContent(new EmailContent(mailContent.getBytes()));
-                email.setReceivedDate(new Date());
-                emailService.save(email);
-                log.info(String.format("Deliver from %s to %s", email.getFrom(), email.getRecipient()));
-            }
-        }
-
-        public void done() {
-
-        }
-
-        private String getSubjectFromStr(String data) {
-
-
-            try {
-                Session s = Session.getDefaultInstance(new Properties());
-                InputStream is = new ByteArrayInputStream(data.getBytes());
-                MimeMessage message = new MimeMessage(s, is);
-                return message.getSubject();
-            } catch (MessagingException e) {
-                log.error("", e);
-
-            }
-            return "";
-        }
-
-        private String convertStreamToString(InputStream is) {
-            try {
-                return IOUtils.toString(is, Charset.forName("UTF8"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
+    public void recipient(String recipient) throws RejectException {
+      EmailObject email = new EmailObject();
+      email.setRecipient(recipient);
+      emails.add(email);
     }
+
+    public void data(InputStream data) throws IOException {
+
+
+      //mailSaver.saveEmailAndNotify(from, recipient, data);
+
+      String mailContent = convertStreamToString(data);
+      for (EmailObject email : emails) {
+        email.setFrom(from);
+        email.setSource(source);
+        email.setSubject(getSubjectFromStr(mailContent));
+        email.setEmailContent(new EmailContent(mailContent.getBytes()));
+        email.setReceivedDate(new Date());
+        emailService.save(email);
+        log.info(String.format("Deliver from %s to %s", email.getFrom(), email.getRecipient()));
+      }
+    }
+
+    public void done() {
+
+    }
+
+    private String getSubjectFromStr(String data) {
+
+
+      try {
+        Session s = Session.getDefaultInstance(new Properties());
+        InputStream is = new ByteArrayInputStream(data.getBytes());
+        MimeMessage message = new MimeMessage(s, is);
+        return message.getSubject();
+      } catch (MessagingException e) {
+        log.error("", e);
+
+      }
+      return "";
+    }
+
+    private String convertStreamToString(InputStream is) {
+      try {
+        return IOUtils.toString(is, Charset.forName("UTF8"));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+  }
 }
