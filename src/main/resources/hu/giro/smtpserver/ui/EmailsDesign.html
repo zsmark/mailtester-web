@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
-  <meta name="vaadin-version" content="8.0.5">
+  <meta name="vaadin-version" content="8.1.5">
   <meta name="package-mapping" content="hu_giro_smtpserver_ui:hu.giro.smtpserver.ui">
  </head>
  <body>
@@ -16,9 +16,11 @@
     </vaadin-combo-box>
     <vaadin-text-field caption="Szöveg" _id="textFilter"></vaadin-text-field>
     <hu_giro_smtpserver_ui-true-false-all-group _id="readFilter" :bottom :expand="10"></hu_giro_smtpserver_ui-true-false-all-group>
-    <vaadin-horizontal-layout :bottom :right :expand>
-     <vaadin-button icon="fonticon://Vaadin-Icons/e703" plain-text _id="saveButton" :middle :right></vaadin-button>
-    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout :bottom :right :expand></vaadin-horizontal-layout>
+    <vaadin-button plain-text _id="deleteButton" :bottom>
+      Törlés
+    </vaadin-button>
+    <vaadin-button icon="fonticon://Vaadin-Icons/e703" plain-text _id="saveButton" :bottom :center></vaadin-button>
    </vaadin-horizontal-layout>
    <vaadin-grid width-full height="20em" data-item-type="hu.giro.smtpserver.model.entity.EmailObject" selection-mode="multi" _id="emailGrid">
     <table>

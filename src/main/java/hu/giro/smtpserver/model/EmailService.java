@@ -7,6 +7,7 @@ import java.util.Set;
 
 public interface EmailService {
     List<EmailObject> findAll();
+    List<EmailRestDto> findAllRestDTO();
 
     List<EmailObject>findAll(EmailSearchDTO search);
 
@@ -19,11 +20,13 @@ public interface EmailService {
 
     byte[] getEmailContent(EmailObject emailObject);
 
-    List<EmailObject> findByContent(String content);
+    List<EmailRestDto> findByContent(String content);
 
     EmailObject findContentByEmaiLId(Integer id);
 
      EmailContentDto convertContentDto(EmailObject emailObject);
 
-    List<EmailObject> findAllByRecipient(String recipient);
+    List<EmailRestDto> findAllByRecipient(String recipient);
+
+    void deleteAll(String domain);
 }

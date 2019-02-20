@@ -18,4 +18,6 @@ public interface EmailObjectRepository extends JpaRepository<EmailObject,Integer
 
     List<EmailObject> findAllByRecipientLike(String recipient);
 
+    @Modifying
+    void deleteAllBySource(String source);
 }

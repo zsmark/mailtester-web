@@ -8,6 +8,7 @@ import hu.giro.smtpserver.model.repository.EmailObjectRepository;
 import hu.giro.smtpserver.server.SMTPServerHandler;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * Created by morti on 10/9/17.
  */
-@RequestMapping("/rest")
+@RequestMapping("/rest/")
 @RestController
 public class Index {
     private final SMTPServerHandler server;
@@ -26,14 +27,11 @@ public class Index {
 
     private final EmailService service;
 
-    private final ModelMapper modelMapper;
-
     @Autowired
-    public Index(EmailService service, EmailObjectRepository repository, SMTPServerHandler server, ModelMapper modelMapper) {
+    public Index(EmailService service, EmailObjectRepository repository, SMTPServerHandler server) {
         this.service = service;
         this.repository = repository;
         this.server = server;
-        this.modelMapper = modelMapper;
     }
 
     @GetMapping(value = "status")
@@ -42,24 +40,30 @@ public class Index {
     }
 
     @GetMapping(value = "findAll")
-    public List<EmailObject> getAllEmail() {
-        return repository.findAll();
+    public ResponseEntity<List<EmailRestDto>> getAllEmail() {
+        return ResponseEntity.ok(service.findAllRestDTO());
     }
 
     @GetMapping(value = "findByContent")
-    public List<EmailRestDto> findByContent(@RequestParam("content") String content) {
-        List<EmailObject> result = service.findByContent(content);
-        return result.stream().map(emailObject -> modelMapper.map(emailObject,EmailRestDto.class)).collect(Collectors.toList());
+    public ResponseEntity<List<EmailRestDto>> findByContent(@RequestParam("content") String content) {
+        List<EmailRestDto> result = service.findByContent(content);
+        return ResponseEntity.ok(result);
     }
     @GetMapping(value = "findByRecipient")
-    public List<EmailRestDto> findByRecipient(@RequestParam("recipient") String recipient) {
-        List<EmailObject> result = service.findAllByRecipient(recipient);
-        return result.stream().map(emailObject -> modelMapper.map(emailObject,EmailRestDto.class)).collect(Collectors.toList());
+    public ResponseEntity<List<EmailRestDto>> findByRecipient(@RequestParam("recipient") String recipient) {
+        List<EmailRestDto> result = service.findAllByRecipient(recipient);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping(value = "getContentById")
-    public EmailContentDto getContentById(@RequestParam("id") Integer id){
+    public ResponseEntity<EmailContentDto> getContentById(@RequestParam("id") Integer id){
         EmailObject result = service.findContentByEmaiLId(id);
-        return service.convertContentDto(result);
+        return ResponseEntity.ok(service.convertContentDto(result));
+    }
+
+    @DeleteMapping(value ="deleteAll")
+    public boolean deleteAll(@RequestParam("domain") String domain){
+        service.deleteAll(domain);
+        return true;
     }
 }
