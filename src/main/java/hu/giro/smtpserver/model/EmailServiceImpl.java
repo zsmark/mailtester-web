@@ -5,14 +5,18 @@ import static hu.giro.smtpserver.model.TrueFalseAllEnum.TRUE;
 
 import hu.giro.smtpserver.model.entity.EmailObject;
 import hu.giro.smtpserver.model.repository.EmailObjectRepository;
+import hu.giro.smtpserver.server.EmailParserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.james.mime4j.MimeException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import tech.blueglacier.email.Email;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +36,9 @@ public class EmailServiceImpl implements EmailService {
   private final ModelMapper mapper;
   private EmailObjectRepository repository;
   private Set<String> domains = new TreeSet<String>();
+
+  @Autowired
+  EmailParserService emailParser;
 
   @Autowired
   public EmailServiceImpl(EmailObjectRepository repository, ModelMapper mapper) {
@@ -81,6 +88,12 @@ public class EmailServiceImpl implements EmailService {
   public byte[] getEmailContent(EmailObject emailObject) {
     emailObject = repository.findOne(emailObject.getId());
     return emailObject.getEmailContent().getContent();
+  }
+
+  @Override
+  public Email getEmail(EmailObject emailObject) throws IOException, MimeException {
+
+    return emailParser.parse(getEmailContent(emailObject));
   }
 
   @Override

@@ -224,7 +224,7 @@ public class EmailsViewFactory {
           }, "mailtester_" + selected.getId() + ".eml"));
 
       try {
-        emailLayout.addComponent(new EmailDisplay(emailService.getEmailContent(selected)));
+        emailLayout.addComponent(new EmailDisplay(emailService.getEmail(selected)));
       } catch (Exception ex) {
         ex.printStackTrace();
         return;

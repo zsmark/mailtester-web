@@ -38,6 +38,9 @@ public class EmailObject implements Serializable{
     @Column(name = "BLIND_CARBON_COPY")
     private String bcc;
 
+    @Column(name = "MESSAGE_ID")
+    private String messageId;
+
     @Column(name = "EMAIL_SUBJECT")
     private String subject;
 
@@ -145,6 +148,14 @@ public class EmailObject implements Serializable{
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public String getDomain()

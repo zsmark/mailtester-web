@@ -6,12 +6,14 @@ import hu.giro.smtpserver.model.entity.EmailObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.james.mime4j.MimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.subethamail.smtp.MessageContext;
 import org.subethamail.smtp.MessageHandler;
 import org.subethamail.smtp.MessageHandlerFactory;
 import org.subethamail.smtp.RejectException;
+import tech.blueglacier.email.Email;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -32,6 +34,9 @@ public class MailHandlerFactory implements MessageHandlerFactory {
   private final EmailService emailService;
 
   @Autowired
+  private EmailParserService parserService;
+
+  @Autowired
   public MailHandlerFactory(EmailService emailService) {
     this.emailService = emailService;
   }
@@ -50,7 +55,7 @@ public class MailHandlerFactory implements MessageHandlerFactory {
     public MailHandler(MessageContext ctx) {
       this.ctx = ctx;
 
-      this.source = (String) ctx.getAuthenticationHandler().getIdentity();
+      this.source = ctx.getAuthenticationHandler() == null ? null : (String) ctx.getAuthenticationHandler().getIdentity();
       if (source == null) {
         this.source = ctx.getRemoteAddress().toString();
       }
@@ -76,11 +81,27 @@ public class MailHandlerFactory implements MessageHandlerFactory {
         email.setFrom(from);
         email.setSource(source);
         email.setSubject(getSubjectFromStr(mailContent));
-        email.setEmailContent(new EmailContent(mailContent.getBytes()));
+        byte[] content = mailContent.getBytes();
+        email.setEmailContent(new EmailContent(content));
+        email.setMessageId(parseMessageId(content));
         email.setReceivedDate(new Date());
         emailService.save(email);
         log.info(String.format("Deliver from %s to %s", email.getFrom(), email.getRecipient()));
       }
+    }
+
+    private String parseMessageId(byte[] content) {
+      try {
+        Email mail = parserService.parse(content);
+        if (mail.getHeader().getField("message-id")!=null) {
+          return mail.getHeader().getField("message-id").getBody().
+              replaceAll("@.*$","").substring(1);
+
+        }
+      } catch (Exception e) {
+
+      }
+      return null;
     }
 
     public void done() {

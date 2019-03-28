@@ -30,25 +30,44 @@ import java.util.List;
 
 public class EmailDisplay extends VerticalLayout {
     private List<Attachment> attachments;
-    private Attachment calendar;
     private Attachment htmlBody;
     private Attachment plainText;
-    String to, cc, from;
+    private String to, cc, from;
     private String body= "Üres";
     private boolean htmlType;
     private GridLayout headerLayout;
     private Label hLine;
 
-    public EmailDisplay(byte[] emailContent) throws IOException, MimeException {
-        parseMail(emailContent);
-        setSpacing(false);
-        setSizeFull();
-        setMargin(false);
-        setId("emailDisplay");
+    public EmailDisplay(Email email) throws IOException {
+        attachments = email.getAttachments();
+
+
+        htmlBody = email.getHTMLEmailBody();
+
+        plainText = email.getPlainTextEmailBody();
+
+        if (htmlBody!=null) {
+            body = convertToString(htmlBody);
+            htmlType=true;
+        }
+        else if (plainText!=null)
+        {   body = convertToString(plainText);
+            htmlType=false;
+        }
+
+        to = email.getToEmailHeaderValue();
+        cc = email.getCCEmailHeaderValue();
+        from = email.getFromEmailHeaderValue();
+
         init();
     }
 
     private void init() {
+        setSpacing(false);
+        setSizeFull();
+        setMargin(false);
+        setId("emailDisplay");
+
         createHeaderLayout();
         Label html = new Label(body);
         html.setContentMode(ContentMode.HTML);
@@ -127,6 +146,7 @@ public class EmailDisplay extends VerticalLayout {
         return IOUtils.toString(attachment.getIs(),attachment.getBd().getCharset());
     }
 
+  /*
     private void parseMail(byte[] emailContent) throws MimeException, IOException {
         String x = new String(emailContent,"UTF8");
         LogFactory.getLog("EmailDisplay.parseMail").debug(x);
@@ -144,27 +164,9 @@ public class EmailDisplay extends VerticalLayout {
 
         Email email = ((CustomContentHandler) contentHandler).getEmail();
 
-        attachments = email.getAttachments();
 
-        calendar = email.getCalendarBody();
-        htmlBody = email.getHTMLEmailBody();
 
-        plainText = email.getPlainTextEmailBody();
-
-        if (htmlBody!=null) {
-            body = convertToString(htmlBody);
-            htmlType=true;
-        }
-        else if (plainText!=null)
-        {   body = convertToString(plainText);
-            htmlType=false;
-        }
-
-        to = email.getToEmailHeaderValue();
-        cc = email.getCCEmailHeaderValue();
-        from = email.getFromEmailHeaderValue();
-
-    }
+    }*/
 
 
 }

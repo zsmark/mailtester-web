@@ -35,10 +35,15 @@ public class SMTPServerHandler {
     @Value("${smtpserver.port}")
     private int port;
 
+    @Value("${smtpserver.noauth:false}")
+    private boolean noauth;
+
+
     @PostConstruct
     public void init(){
 
-        smtpServer  = new SMTPServer(handlerFactory,new LoginAuthenticationHandlerFactory(new UsernamePasswordValidator() {
+        smtpServer  = new SMTPServer(handlerFactory,
+            noauth?null : new LoginAuthenticationHandlerFactory(new UsernamePasswordValidator() {
             @Override
             public void login(String username, String password) throws LoginFailedException {
             //Mindent elfogadó authenticator

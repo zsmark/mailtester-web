@@ -27,6 +27,7 @@
             <column defaultValueNumeric="0" name="VERSION" type="INTEGER"/>
             <column name="SOURCE" type="VARCHAR(255)"/>
             <column name="FROM_USER" type="VARCHAR(255)"/>
+
             <column name="RECIPIENT" type="VARCHAR(255)"/>
             <column name="TO_USERS" type="VARCHAR(500)"/>
             <column name="CARBON_COPY" type="VARCHAR(500)"/>
@@ -35,6 +36,7 @@
             <column name="EMAIL_CONTENT" type="INTEGER">
                 <constraints foreignKeyName="email_content_fk" referencedColumnNames="ID" referencedTableName="EMAIL_CONTENT"/>
             </column>
+            <column name="MESSAGE_ID" type="VARCHAR(255)"/>
             <column name="READ" type="INTEGER"/>
             <column name="RECEIVED_DATE" type="TIMESTAMP"/>
         </createTable>
