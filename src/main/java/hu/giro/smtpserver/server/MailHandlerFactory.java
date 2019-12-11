@@ -99,7 +99,7 @@ public class MailHandlerFactory implements MessageHandlerFactory {
 
         }
       } catch (Exception e) {
-
+        // elvileg lehetetlen
       }
       return null;
     }
