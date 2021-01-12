@@ -91,6 +91,7 @@ public class EmailServiceImpl implements EmailService {
   }
 
   @Override
+  @Transactional
   public Email getEmail(EmailObject emailObject) throws IOException, MimeException {
 
     return emailParser.parse(getEmailContent(emailObject));
